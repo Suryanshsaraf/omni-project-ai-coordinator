@@ -1,0 +1,249 @@
+{
+  "telemedicine_app": {
+    "title": "HealthTech Telemedicine & Prescription Platform",
+    "description": "Build an end-to-end HIPAA-compliant telemedicine platform with WebRTC video consultations, automated prescription generation, and Stripe healthcare billing in 6 sprints.",
+    "methodology": "Agile / Scrum",
+    "sprint_duration_weeks": 2,
+    "team_members": [
+      {"name": "Ananya Sharma", "role": "Fullstack Lead", "capacity_hours": 40},
+      {"name": "Rohan Verma", "role": "Frontend Engineer", "capacity_hours": 35},
+      {"name": "Priya Nair", "role": "Backend & Cloud Engineer", "capacity_hours": 40},
+      {"name": "Siddharth Das", "role": "QA & Security Specialist", "capacity_hours": 30}
+    ],
+    "epics": [
+      {
+        "id": "EPIC-1",
+        "title": "HIPAA-Compliant Patient Onboarding & Auth",
+        "priority": "High"
+      },
+      {
+        "id": "EPIC-2",
+        "title": "Real-time Video Consultation Engine",
+        "priority": "Urgent"
+      },
+      {
+        "id": "EPIC-3",
+        "title": "Digital Prescription & Pharmacy Dispatch",
+        "priority": "Medium"
+      }
+    ],
+    "tasks": [
+      {
+        "id": "TASK-101",
+        "epic_id": "EPIC-1",
+        "title": "Implement Multi-Factor Auth (MFA) with SMS/TOTP",
+        "user_story": "As a patient, I want to authenticate via 2FA so that my sensitive health records remain protected.",
+        "acceptance_criteria": "Given user enters valid credentials, When OTP is sent to mobile, Then user enters correct OTP and gains access within 60s.",
+        "assignee": "Priya Nair",
+        "status": "Done",
+        "story_points": 5,
+        "estimated_hours": 20,
+        "actual_hours": 18,
+        "priority": "High",
+        "due_date": "2026-11-01",
+        "dependencies": [],
+        "risk_level": "Low"
+      },
+      {
+        "id": "TASK-102",
+        "epic_id": "EPIC-1",
+        "title": "Patient Health History Profile & Consent Forms",
+        "user_story": "As a patient, I want to fill in my medical history and sign digital consent forms so the doctor is pre-briefed.",
+        "acceptance_criteria": "Given new user profile, When user uploads prior records, Then encryption at rest (AES-256) is applied and timestamped audit log is stored.",
+        "assignee": "Rohan Verma",
+        "status": "In Progress",
+        "story_points": 3,
+        "estimated_hours": 15,
+        "actual_hours": 12,
+        "priority": "Medium",
+        "due_date": "2026-11-04",
+        "dependencies": ["TASK-101"],
+        "risk_level": "Low"
+      },
+      {
+        "id": "TASK-103",
+        "epic_id": "EPIC-2",
+        "title": "WebRTC Video/Audio Consultation Integration",
+        "user_story": "As a doctor, I want crystal clear peer-to-peer video streaming with screen sharing so I can consult remotely.",
+        "acceptance_criteria": "Given both doctor and patient are in room, When session connects, Then latency is < 200ms and stream is end-to-end encrypted.",
+        "assignee": "Ananya Sharma",
+        "status": "Blocked",
+        "story_points": 8,
+        "estimated_hours": 32,
+        "actual_hours": 30,
+        "priority": "Urgent",
+        "due_date": "2026-11-05",
+        "dependencies": ["TASK-102"],
+        "risk_level": "High",
+        "blocker_reason": "Waiting on TURN/STUN server security clearance from DevOps team."
+      },
+      {
+        "id": "TASK-104",
+        "epic_id": "EPIC-2",
+        "title": "Call Recording & Secure AWS S3 Archive",
+        "user_story": "As a clinic admin, I want patient-consented calls securely stored for 90 days for compliance audits.",
+        "acceptance_criteria": "Given consent flag is true, When call completes, Then video is encoded and uploaded to private S3 bucket with KMS encryption.",
+        "assignee": "Priya Nair",
+        "status": "To Do",
+        "story_points": 5,
+        "estimated_hours": 20,
+        "actual_hours": 0,
+        "priority": "Medium",
+        "due_date": "2026-11-10",
+        "dependencies": ["TASK-103"],
+        "risk_level": "Medium"
+      },
+      {
+        "id": "TASK-105",
+        "epic_id": "EPIC-3",
+        "title": "Digital Prescription Builder with Drug Interaction Warning",
+        "user_story": "As a doctor, I want automated drug conflict warnings when prescribing medication so patient safety is guaranteed.",
+        "acceptance_criteria": "Given doctor selects Medication A and B, When known contraindication exists, Then modal warning pops up with severity rating.",
+        "assignee": "Ananya Sharma",
+        "status": "To Do",
+        "story_points": 8,
+        "estimated_hours": 30,
+        "actual_hours": 0,
+        "priority": "High",
+        "due_date": "2026-11-15",
+        "dependencies": [],
+        "risk_level": "High"
+      },
+      {
+        "id": "TASK-106",
+        "epic_id": "EPIC-3",
+        "title": "Automated Pharmacy Fax & API Dispatch",
+        "user_story": "As a pharmacist, I want to receive signed prescription PDFs directly via webhook so fulfillments begin immediately.",
+        "acceptance_criteria": "Given prescription is signed, When doctor clicks send, Then pharmacy partner API responds with HTTP 200 within 3 seconds.",
+        "assignee": "Siddharth Das",
+        "status": "To Do",
+        "story_points": 3,
+        "estimated_hours": 14,
+        "actual_hours": 0,
+        "priority": "Low",
+        "due_date": "2026-11-18",
+        "dependencies": ["TASK-105"],
+        "risk_level": "Low"
+      }
+    ],
+    "risks": [
+      {
+        "id": "RISK-01",
+        "category": "Technical & Infrastructure",
+        "description": "TURN/STUN server latency may degrade video quality on low-bandwidth 4G mobile connections.",
+        "probability": 4,
+        "impact": 5,
+        "score": 20,
+        "severity": "Critical",
+        "mitigation_strategy": "Implement adaptive bitrate streaming (WebRTC VP8/VP9) and provide automated audio-only fallback mode.",
+        "owner": "Ananya Sharma",
+        "status": "Active"
+      },
+      {
+        "id": "RISK-02",
+        "category": "Compliance & Security",
+        "description": "HIPAA compliance audit finding unencrypted metadata in analytics logs.",
+        "probability": 2,
+        "impact": 5,
+        "score": 10,
+        "severity": "Moderate",
+        "mitigation_strategy": "Sanitize all telemetry payload pipelines to strip PII and health identifiers before ingestion.",
+        "owner": "Siddharth Das",
+        "status": "Monitoring"
+      },
+      {
+        "id": "RISK-03",
+        "category": "Resource Allocation",
+        "description": "Fullstack lead (Ananya) is over-allocated with both WebRTC engine and Drug interaction engine.",
+        "probability": 4,
+        "impact": 4,
+        "score": 16,
+        "severity": "High",
+        "mitigation_strategy": "Reallocate Task-105 frontend components to Rohan Verma and bring in 1 contract specialist.",
+        "owner": "Project Coordinator",
+        "status": "Active"
+      }
+    ]
+  },
+  "fintech_kyc": {
+    "title": "Fintech Instant KYC & Loan Disbursal App",
+    "description": "Build an AI-powered instant credit eligibility and Aadhaar/PAN verification app with under-5-minute loan disbursals.",
+    "methodology": "Kanban / Continuous Flow",
+    "sprint_duration_weeks": 2,
+    "team_members": [
+      {"name": "Devansh Gupta", "role": "ML Engineer", "capacity_hours": 40},
+      {"name": "Meera Sen", "role": "Backend Engineer", "capacity_hours": 40},
+      {"name": "Karan Kapoor", "role": "App Developer (Flutter)", "capacity_hours": 35}
+    ],
+    "epics": [
+      { "id": "EPIC-1", "title": "OCR & Face Liveness Verification", "priority": "Urgent" },
+      { "id": "EPIC-2", "title": "Credit Score & Alternate Data Model", "priority": "High" },
+      { "id": "EPIC-3", "title": "UPI Autopay & Loan Disbursal", "priority": "High" }
+    ],
+    "tasks": [
+      {
+        "id": "TASK-201",
+        "epic_id": "EPIC-1",
+        "title": "Camera OCR for PAN and Driving License",
+        "user_story": "As an applicant, I want my document auto-scanned so I don't type manual details.",
+        "acceptance_criteria": "Given clear photo, When OCR engine runs, Then accuracy is > 98% and returns parsed JSON within 1.5s.",
+        "assignee": "Devansh Gupta",
+        "status": "Done",
+        "story_points": 5,
+        "estimated_hours": 20,
+        "actual_hours": 16,
+        "priority": "High",
+        "due_date": "2026-11-02",
+        "dependencies": [],
+        "risk_level": "Low"
+      },
+      {
+        "id": "TASK-202",
+        "epic_id": "EPIC-1",
+        "title": "Active Face Liveness Detection (Anti-Spoofing)",
+        "user_story": "As a risk officer, I want passive/active liveness check to prevent identity impersonation.",
+        "acceptance_criteria": "Given live webcam feed, When user blinks or smiles, Then anti-spoofing score > 0.95 flags as real human.",
+        "assignee": "Devansh Gupta",
+        "status": "In Progress",
+        "story_points": 8,
+        "estimated_hours": 30,
+        "actual_hours": 22,
+        "priority": "Urgent",
+        "due_date": "2026-11-06",
+        "dependencies": ["TASK-201"],
+        "risk_level": "Medium"
+      },
+      {
+        "id": "TASK-203",
+        "epic_id": "EPIC-3",
+        "title": "NPCI e-Mandate / UPI Autopay Integration",
+        "user_story": "As a lender, I want recurring auto-debit set up before disbursal to secure repayments.",
+        "acceptance_criteria": "Given verified bank account, When user authorizes UPI autopay, Then mandate ID is registered with payment gateway.",
+        "assignee": "Meera Sen",
+        "status": "Blocked",
+        "story_points": 5,
+        "estimated_hours": 25,
+        "actual_hours": 15,
+        "priority": "High",
+        "due_date": "2026-11-08",
+        "dependencies": [],
+        "risk_level": "High",
+        "blocker_reason": "Sandbox API keys expired; awaiting Razorpay bank compliance renewal."
+      }
+    ],
+    "risks": [
+      {
+        "id": "RISK-101",
+        "category": "Regulatory / Compliance",
+        "description": "RBI guidelines update on digital lending aggregators requiring onshore server audits.",
+        "probability": 3,
+        "impact": 5,
+        "score": 15,
+        "severity": "High",
+        "mitigation_strategy": "Ensure AWS Mumbai (ap-south-1) isolated VPC setup with data residency certificates.",
+        "owner": "Meera Sen",
+        "status": "Active"
+      }
+    ]
+  }
+}
