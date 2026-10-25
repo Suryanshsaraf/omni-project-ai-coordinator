@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { useProject } from '../../context/ProjectContext';
-import { Sparkles, Play, UploadCloud, CheckCircle2, ChevronDown, ChevronRight, Layers, FileCode } from 'lucide-react';
+import { Sparkles, Play, UploadCloud, CheckCircle2, ChevronDown, ChevronRight, Layers, FileCode, Cpu } from 'lucide-react';
 import { Task, Epic } from '../../types';
+import { dynamicSynthesizeWBS } from '../../utils/dynamicSynthesizer';
 
 export const TabScoping: React.FC = () => {
   const { project, setProject, addAgentLog, settings } = useProject();
   
   const [brief, setBrief] = useState(
-    'We need to build a customer complaint triage SaaS that ingests support tickets across email, WhatsApp, and Zendesk, applies sentiment analysis to rank SLA urgency under 2 hours, and auto-assigns tier-1 vs tier-2 engineers.'
+    'Build an AI-powered fitness and meal planning app with workout tracking, wearable telemetry sync, and personalized macro diet recommendations.'
   );
   const [methodology, setMethodology] = useState('Agile / Scrum');
   const [sprintWeeks, setSprintWeeks] = useState(2);
@@ -18,103 +19,114 @@ export const TabScoping: React.FC = () => {
     'EPIC-3': true
   });
   const [syncStatus, setSyncStatus] = useState<string | null>(null);
+  const [generationSource, setGenerationSource] = useState<string | null>(null);
 
   const toggleEpic = (id: string) => {
     setExpandedEpics(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
   const handleSynthesize = async () => {
+    if (!brief.trim()) {
+      alert('Please enter a project brief or feature requirement first.');
+      return;
+    }
+
     setIsGenerating(true);
-    addAgentLog('SYNTHESIZE_INITIATED', `Prompt engine executing WBS decomposition (${methodology}, ${sprintWeeks}w)`, 'info');
+    setGenerationSource(null);
+    addAgentLog('SYNTHESIZE_INITIATED', `Executing WBS decomposition for: "${brief.slice(0, 50)}..."`, 'info');
 
-    try {
-      const res = await fetch('/api/scoping', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          brief,
-          methodology,
-          sprint_weeks: sprintWeeks,
-          api_key: settings.geminiApiKey || settings.openaiApiKey || undefined,
-          provider: settings.geminiApiKey ? 'gemini' : 'openai'
-        })
-      });
+    // 1. Try Live Google Gemini LLM API if key is available
+    if (settings.geminiApiKey) {
+      try {
+        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${settings.geminiApiKey.trim()}`;
+        const promptPayload = {
+          contents: [
+            {
+              role: 'user',
+              parts: [
+                {
+                  text: `You are an expert Agile Scrum Master. Deconstruct this project requirement into a Work Breakdown Structure (WBS).
+Project Brief: "${brief}"
+Methodology: "${methodology}"
+Sprint Cadence: ${sprintWeeks} weeks
 
-      if (res.ok) {
-        const data = await res.json();
-        if (data.epics && data.tasks) {
-          setProject(prev => ({
-            ...prev,
-            title: data.project_title || prev.title,
-            description: data.executive_summary || brief,
-            epics: data.epics,
-            tasks: data.tasks
-          }));
-          addAgentLog('WBS_COMPLETE', `AI synthesized ${data.epics.length} Epics and ${data.tasks.length} user stories`, 'info');
-          setIsGenerating(false);
-          return;
+Return ONLY valid JSON (no markdown fences, no conversational text) matching this schema:
+{
+  "project_title": "Punchy 3-5 word title",
+  "executive_summary": "1 sentence overview",
+  "epics": [
+    { "id": "EPIC-1", "title": "Epic Name", "priority": "Urgent|High|Medium", "description": "Scope of this epic" }
+  ],
+  "tasks": [
+    {
+      "id": "TASK-101",
+      "epic_id": "EPIC-1",
+      "title": "Actionable Task Title",
+      "user_story": "As a [role], I want [action], so that [value]",
+      "acceptance_criteria": "Given [context], When [action], Then [measurable outcome]",
+      "assignee": "${project.team_members[0]?.name || 'Lead Architect'}",
+      "status": "To Do",
+      "story_points": 5,
+      "estimated_hours": 20,
+      "priority": "High"
+    }
+  ]
+}`
+                }
+              ]
+            }
+          ]
+        };
+
+        const res = await fetch(geminiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(promptPayload)
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+          const cleanedText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
+          const parsed = JSON.parse(cleanedText);
+
+          if (parsed.epics && parsed.tasks) {
+            setProject(prev => ({
+              ...prev,
+              title: parsed.project_title || prev.title,
+              description: parsed.executive_summary || brief,
+              epics: parsed.epics,
+              tasks: parsed.tasks
+            }));
+
+            setGenerationSource('Synthesized live via Google Gemini 1.5 LLM');
+            addAgentLog('WBS_COMPLETE', `Google Gemini synthesized ${parsed.epics.length} Epics & ${parsed.tasks.length} User Stories`, 'info');
+            setIsGenerating(false);
+            return;
+          }
         }
+      } catch (err) {
+        console.warn('Gemini API call fell back to Dynamic NLP Synthesizer:', err);
       }
-    } catch (e) {}
+    }
 
-    // Graceful offline heuristic fallback
+    // 2. Dynamic Contextual NLP Synthesizer (Tailored to prompt keywords & domain)
     setTimeout(() => {
-      const generatedEpics: Epic[] = [
-        { id: 'EPIC-10', title: 'Multi-Channel Ingestion & Kafka Telemetry Queue', priority: 'Urgent', description: 'Real-time webhook listeners for WhatsApp and Zendesk APIs.' },
-        { id: 'EPIC-20', title: 'Sentiment Classifier & Dynamic SLA Urgency Engine', priority: 'High', description: 'Zero-shot RoBERTa sentiment classifier evaluating ticket escalate priority.' },
-        { id: 'EPIC-30', title: 'Intelligent Tier-1/Tier-2 Dispatch & Audit Logs', priority: 'Medium', description: 'Automated skill-based routing with compliance audit logs.' }
-      ];
-
-      const generatedTasks: Task[] = [
-        {
-          id: 'TASK-1001',
-          epic_id: 'EPIC-10',
-          title: 'Implement Webhook Ingestion Gateway with HMAC Verification',
-          user_story: 'As a system architect, I want incoming Zendesk/WhatsApp webhooks cryptographically verified so malicious forged payloads are rejected.',
-          acceptance_criteria: 'Given inbound webhook, When signature matches HMAC SHA-256 header, Then payload is pushed to ingestion buffer in < 15ms.',
-          assignee: project.team_members[0]?.name || 'Lead Architect',
-          status: 'In Progress',
-          story_points: 5,
-          estimated_hours: 20,
-          priority: 'Urgent'
-        },
-        {
-          id: 'TASK-1002',
-          epic_id: 'EPIC-20',
-          title: 'Sentiment Model Inference Microservice (< 200ms latency)',
-          user_story: 'As a customer ops lead, I want negative sentiment tickets flagged within seconds so emergency churn risks are expedited.',
-          acceptance_criteria: 'Given unclassified complaint, When inference runs on GPU node, Then confidence score > 0.88 labels ticket as Urgent SLA.',
-          assignee: project.team_members[1]?.name || 'ML Engineer',
-          status: 'To Do',
-          story_points: 8,
-          estimated_hours: 32,
-          priority: 'High'
-        },
-        {
-          id: 'TASK-1003',
-          epic_id: 'EPIC-30',
-          title: 'Tier-1 vs Tier-2 Dynamic Queue Dispatcher',
-          user_story: 'As a support engineer, I want tickets assigned based on domain specialty and current shift capacity so response time stays under 2 hours.',
-          acceptance_criteria: 'Given categorized ticket, When agent is available with matching role tags, Then ticket is assigned and Slack nudge is dispatched.',
-          assignee: project.team_members[2]?.name || 'Backend Lead',
-          status: 'To Do',
-          story_points: 5,
-          estimated_hours: 24,
-          priority: 'Medium'
-        }
-      ];
+      const synthesized = dynamicSynthesizeWBS(brief, methodology, sprintWeeks, project.team_members);
 
       setProject(prev => ({
         ...prev,
-        title: 'Customer Complaint Triage SaaS',
-        description: brief,
-        epics: generatedEpics,
-        tasks: generatedTasks
+        title: synthesized.title,
+        description: synthesized.description,
+        epics: synthesized.epics,
+        tasks: synthesized.tasks,
+        risks: synthesized.risks
       }));
 
+      setGenerationSource('Synthesized by Dynamic Contextual NLP Engine (Customized to your prompt)');
+      addAgentLog('WBS_COMPLETE', `AI decomposed prompt into: "${synthesized.title}" with 3 Epics & 5 Stories`, 'info');
       setIsGenerating(false);
-      addAgentLog('WBS_COMPLETE', 'Backlog synthesized with 3 Epics and Gherkin acceptance criteria!', 'info');
-    }, 1000);
+    }, 700);
   };
 
   const handleSyncClickUp = () => {
@@ -146,7 +158,7 @@ export const TabScoping: React.FC = () => {
               Scoping & Work Breakdown Structure (WBS)
             </h2>
             <p className="text-xs text-slate-400 mt-1">
-              Advanced context-rich prompt decomposes ambiguous requirements into Epics, User Stories, and testable Gherkin acceptance criteria.
+              Type any project idea below. The AI dynamically deconstructs it into Epics, User Stories, and Gherkin criteria tailored specifically to your input.
             </p>
           </div>
 
@@ -177,6 +189,13 @@ export const TabScoping: React.FC = () => {
           </div>
         )}
 
+        {generationSource && (
+          <div className="mb-4 px-3.5 py-2 rounded-lg bg-plasma/15 border border-plasma/30 text-plasma text-xs flex items-center gap-2">
+            <Cpu className="w-4 h-4" />
+            <span>{generationSource}</span>
+          </div>
+        )}
+
         {/* Textarea */}
         <textarea
           rows={3}
@@ -184,7 +203,7 @@ export const TabScoping: React.FC = () => {
           onChange={(e) => setBrief(e.target.value)}
           style={{ background: '#12102B', color: '#DDE7FF', border: '1px solid rgba(177, 75, 255, 0.25)' }}
           className="w-full rounded-xl p-4 text-xs sm:text-sm font-mono leading-relaxed resize-none"
-          placeholder="Type raw client requirement, user specs, or feature request..."
+          placeholder="e.g. Build an online sneaker marketplace with live bidding, Stripe payments, and authenticated seller verification..."
         />
 
         {/* Controls Bar */}
