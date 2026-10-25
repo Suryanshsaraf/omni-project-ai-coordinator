@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { useProject } from '../../context/ProjectContext';
-import { Key, Sliders, Eye, EyeOff, Save, CheckCircle2, RotateCcw, BookOpen, Layers } from 'lucide-react';
+import { Key, Sliders, Eye, EyeOff, Save, CheckCircle2, RotateCcw, BookOpen } from 'lucide-react';
 
 export const TabSettings: React.FC = () => {
   const { settings, updateSettings, resetToInitial, addAgentLog } = useProject();
   const [form, setForm] = useState({ ...settings });
   const [showGemini, setShowGemini] = useState(false);
-  const [showOpenAI, setShowOpenAI] = useState(false);
   const [showClickUp, setShowClickUp] = useState(false);
   const [showTrello, setShowTrello] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
@@ -67,22 +66,29 @@ Your writing must be:
   };
 
   return (
-    <div className="space-y-6 pb-20 max-w-5xl mx-auto">
+    <div className="space-y-6 max-w-5xl mx-auto">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="font-display font-bold text-lg text-white flex items-center gap-2">
             <Sliders className="w-5 h-5 text-plasma" />
             Mission Control Settings & Prompt Studio
           </h2>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-slate-400 mt-1">
             Configure live cloud API integrations and explore the AI CERTs course prompt architectures.
           </p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         {/* Left: API Keys Form */}
-        <div className="rounded-2xl bg-night-surface/90 border border-night-border p-6 shadow-xl backdrop-blur-md space-y-5">
+        <div 
+          className="rounded-2xl p-6 shadow-xl space-y-5"
+          style={{
+            background: 'rgba(28, 23, 69, 0.85)',
+            backdropFilter: 'blur(16px)',
+            border: '1px solid rgba(177, 75, 255, 0.22)'
+          }}
+        >
           <h3 className="font-display font-bold text-sm text-white flex items-center gap-2">
             <Key className="w-4 h-4 text-plasma" />
             API & Platform Keys (Stored in LocalStorage)
@@ -91,7 +97,7 @@ Your writing must be:
           <form onSubmit={handleSave} className="space-y-4 text-xs">
             {/* Gemini */}
             <div>
-              <label className="block text-slate-300 font-medium mb-1">
+              <label className="block text-slate-300 font-medium mb-1.5">
                 Google Gemini API Key:
               </label>
               <div className="relative">
@@ -100,7 +106,8 @@ Your writing must be:
                   value={form.geminiApiKey}
                   onChange={(e) => setForm({ ...form, geminiApiKey: e.target.value })}
                   placeholder="AIzaSy... (Leave empty for smart offline mode)"
-                  className="w-full rounded-xl bg-night-base border border-night-border p-3 text-ice focus:outline-none focus:border-plasma font-mono pr-10"
+                  style={{ background: '#12102B', color: '#DDE7FF', border: '1px solid rgba(177, 75, 255, 0.25)' }}
+                  className="w-full rounded-xl p-3 font-mono pr-10 text-xs"
                 />
                 <button
                   type="button"
@@ -114,7 +121,7 @@ Your writing must be:
 
             {/* ClickUp */}
             <div>
-              <label className="block text-slate-300 font-medium mb-1">
+              <label className="block text-slate-300 font-medium mb-1.5">
                 ClickUp Personal API Token:
               </label>
               <div className="relative">
@@ -123,7 +130,8 @@ Your writing must be:
                   value={form.clickupToken}
                   onChange={(e) => setForm({ ...form, clickupToken: e.target.value })}
                   placeholder="pk_... (Optional for live sync)"
-                  className="w-full rounded-xl bg-night-base border border-night-border p-3 text-ice focus:outline-none focus:border-plasma font-mono pr-10"
+                  style={{ background: '#12102B', color: '#DDE7FF', border: '1px solid rgba(177, 75, 255, 0.25)' }}
+                  className="w-full rounded-xl p-3 font-mono pr-10 text-xs"
                 />
                 <button
                   type="button"
@@ -137,7 +145,7 @@ Your writing must be:
 
             {/* ClickUp List ID */}
             <div>
-              <label className="block text-slate-300 font-medium mb-1">
+              <label className="block text-slate-300 font-medium mb-1.5">
                 ClickUp Target List ID:
               </label>
               <input
@@ -145,13 +153,14 @@ Your writing must be:
                 value={form.clickupListId}
                 onChange={(e) => setForm({ ...form, clickupListId: e.target.value })}
                 placeholder="9012345678"
-                className="w-full rounded-xl bg-night-base border border-night-border p-3 text-ice focus:outline-none focus:border-plasma font-mono"
+                style={{ background: '#12102B', color: '#DDE7FF', border: '1px solid rgba(177, 75, 255, 0.25)' }}
+                className="w-full rounded-xl p-3 font-mono text-xs"
               />
             </div>
 
             {/* Trello API Key */}
             <div>
-              <label className="block text-slate-300 font-medium mb-1">
+              <label className="block text-slate-300 font-medium mb-1.5">
                 Trello API Key & Token:
               </label>
               <div className="grid grid-cols-2 gap-2">
@@ -160,23 +169,26 @@ Your writing must be:
                   value={form.trelloKey}
                   onChange={(e) => setForm({ ...form, trelloKey: e.target.value })}
                   placeholder="Trello Key"
-                  className="w-full rounded-xl bg-night-base border border-night-border p-2.5 text-ice focus:outline-none focus:border-plasma font-mono"
+                  style={{ background: '#12102B', color: '#DDE7FF', border: '1px solid rgba(177, 75, 255, 0.25)' }}
+                  className="w-full rounded-xl p-3 font-mono text-xs"
                 />
                 <input
                   type={showTrello ? 'text' : 'password'}
                   value={form.trelloToken}
                   onChange={(e) => setForm({ ...form, trelloToken: e.target.value })}
                   placeholder="Trello Token"
-                  className="w-full rounded-xl bg-night-base border border-night-border p-2.5 text-ice focus:outline-none focus:border-plasma font-mono"
+                  style={{ background: '#12102B', color: '#DDE7FF', border: '1px solid rgba(177, 75, 255, 0.25)' }}
+                  className="w-full rounded-xl p-3 font-mono text-xs"
                 />
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-2">
+            <div className="flex items-center justify-between pt-3">
               <button
                 type="button"
                 onClick={resetToInitial}
-                className="px-3.5 py-2 rounded-xl bg-night-card hover:bg-night-panel border border-night-border text-xs text-slate-400 hover:text-white flex items-center gap-1.5 transition-colors"
+                className="px-3.5 py-2 rounded-xl text-xs text-slate-400 hover:text-white flex items-center gap-1.5 transition-colors"
+                style={{ background: 'rgba(22, 19, 56, 0.9)', border: '1px solid rgba(177, 75, 255, 0.2)' }}
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 <span>Reset Factory Data</span>
@@ -192,7 +204,7 @@ Your writing must be:
             </div>
 
             {savedSuccess && (
-              <div className="p-3 rounded-lg bg-signal-green/10 border border-signal-green/30 text-signal-green flex items-center gap-2">
+              <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4" />
                 <span>Settings persisted to browser storage!</span>
               </div>
@@ -200,8 +212,15 @@ Your writing must be:
           </form>
         </div>
 
-        {/* Right: Prompt Studio (CardSwap Deck) */}
-        <div className="rounded-2xl bg-night-surface/90 border border-night-border p-6 shadow-xl backdrop-blur-md space-y-4">
+        {/* Right: Prompt Studio */}
+        <div 
+          className="rounded-2xl p-6 shadow-xl space-y-4"
+          style={{
+            background: 'rgba(28, 23, 69, 0.85)',
+            backdropFilter: 'blur(16px)',
+            border: '1px solid rgba(177, 75, 255, 0.22)'
+          }}
+        >
           <div className="flex items-center justify-between">
             <h3 className="font-display font-bold text-sm text-white flex items-center gap-2">
               <BookOpen className="w-4 h-4 text-plasma" />
@@ -215,14 +234,17 @@ Your writing must be:
           </p>
 
           {/* Prompt Selector Pills */}
-          <div className="flex gap-1.5 p-1 bg-night-card rounded-xl border border-night-border">
+          <div 
+            className="flex gap-1.5 p-1 rounded-xl"
+            style={{ background: 'rgba(18, 16, 43, 0.8)', border: '1px solid rgba(177, 75, 255, 0.18)' }}
+          >
             {promptCards.map((p, idx) => (
               <button
                 key={p.title}
                 onClick={() => setActivePromptIndex(idx)}
                 className={`flex-1 py-1.5 text-[11px] font-medium rounded-lg transition-colors ${
                   activePromptIndex === idx
-                    ? 'bg-plasma text-white shadow-md'
+                    ? 'bg-plasma text-white shadow-md font-semibold'
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
@@ -232,7 +254,10 @@ Your writing must be:
           </div>
 
           {/* Active Card Content */}
-          <div className="rounded-xl bg-night-base p-4 border border-night-border/70 space-y-3">
+          <div 
+            className="rounded-xl p-4 space-y-3"
+            style={{ background: 'rgba(18, 16, 43, 0.9)', border: '1px solid rgba(177, 75, 255, 0.2)' }}
+          >
             <div>
               <h4 className="font-display font-bold text-sm text-white">
                 {promptCards[activePromptIndex].title}
@@ -242,7 +267,10 @@ Your writing must be:
               </p>
             </div>
 
-            <pre className="p-3 rounded-lg bg-black/60 border border-night-border/50 text-[11px] font-mono text-slate-300 leading-relaxed overflow-x-auto max-h-72 whitespace-pre-wrap">
+            <pre 
+              className="p-3 rounded-lg text-[11px] font-mono text-slate-300 leading-relaxed overflow-x-auto max-h-72 whitespace-pre-wrap"
+              style={{ background: '#0a091a', border: '1px solid rgba(177, 75, 255, 0.15)' }}
+            >
               {promptCards[activePromptIndex].prompt}
             </pre>
 

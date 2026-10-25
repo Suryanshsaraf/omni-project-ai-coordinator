@@ -16,19 +16,35 @@ export const DockNav: React.FC = () => {
   const criticalRiskCount = project.risks.filter(r => r.severity === 'Critical').length;
 
   const items: DockItem[] = [
-    { id: 'scoping', label: 'Scoping & WBS', icon: FileText },
-    { id: 'kanban', label: 'Sprint Kanban', icon: LayoutGrid, badge: blockedCount > 0 ? blockedCount : undefined },
-    { id: 'risk', label: 'Risk & Matrix', icon: AlertTriangle, badge: criticalRiskCount > 0 ? criticalRiskCount : undefined },
-    { id: 'agent', label: 'AI Coordinator', icon: Bot, badge: nudges.length > 0 ? nudges.length : undefined },
-    { id: 'brief', label: 'Executive Brief', icon: TrendingUp },
-    { id: 'settings', label: 'Settings & Prompts', icon: Sliders }
+    { id: 'scoping', label: '1. Scoping', icon: FileText },
+    { id: 'kanban', label: '2. Kanban', icon: LayoutGrid, badge: blockedCount > 0 ? blockedCount : undefined },
+    { id: 'risk', label: '3. Risk Grid', icon: AlertTriangle, badge: criticalRiskCount > 0 ? criticalRiskCount : undefined },
+    { id: 'agent', label: '4. Coordinator', icon: Bot, badge: nudges.length > 0 ? nudges.length : undefined },
+    { id: 'brief', label: '5. Exec Brief', icon: TrendingUp },
+    { id: 'settings', label: '6. Settings', icon: Sliders }
   ];
 
   return (
-    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 max-w-[95vw]">
+    <div 
+      className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 max-w-[95vw]"
+      style={{
+        position: 'fixed',
+        bottom: '20px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        zIndex: 50
+      }}
+    >
       <nav 
         aria-label="Mission Navigation Dock"
-        className="flex items-center gap-1 sm:gap-2 px-2.5 sm:px-4 py-2 rounded-2xl bg-night-surface/90 backdrop-blur-xl border border-night-border shadow-[0_12px_40px_rgba(0,0,0,0.6)]"
+        className="flex items-center gap-1 sm:gap-2 px-3 py-2 rounded-2xl glass-panel shadow-2xl"
+        style={{
+          background: 'rgba(28, 23, 69, 0.92)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          border: '1px solid rgba(177, 75, 255, 0.28)',
+          boxShadow: '0 20px 50px rgba(0, 0, 0, 0.8), 0 0 20px rgba(177, 75, 255, 0.15)'
+        }}
       >
         {items.map((item) => {
           const Icon = item.icon;
@@ -38,10 +54,10 @@ export const DockNav: React.FC = () => {
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`group relative flex flex-col sm:flex-row items-center gap-1 sm:gap-2 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs font-medium transition-all duration-300 ${
+              className={`relative flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-medium transition-all duration-300 ${
                 isActive
-                  ? 'bg-plasma text-white shadow-lg shadow-plasma/40 scale-105'
-                  : 'text-slate-400 hover:text-ice hover:bg-white/5'
+                  ? 'bg-plasma text-white shadow-lg shadow-plasma/50 font-semibold'
+                  : 'text-slate-400 hover:text-white hover:bg-white/5'
               }`}
             >
               <Icon className="w-4 h-4 shrink-0" />
@@ -60,7 +76,7 @@ export const DockNav: React.FC = () => {
 
               {/* Active Bottom Glow Pill */}
               {isActive && (
-                <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-6 h-1 rounded-full bg-white shadow-[0_0_8px_white]" />
+                <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full bg-white shadow-[0_0_10px_white]" />
               )}
             </button>
           );

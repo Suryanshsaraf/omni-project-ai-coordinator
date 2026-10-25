@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useProject } from '../../context/ProjectContext';
-import { Risk, RiskSeverity } from '../../types';
+import { Risk } from '../../types';
 import { getWorkloadStats, findBottlenecks } from '../../utils/helpers';
-import { AlertTriangle, AlertOctagon, ShieldCheck, Flame, User, X, Info } from 'lucide-react';
+import { AlertTriangle, AlertOctagon, ShieldCheck, Flame, User } from 'lucide-react';
 
 export const TabRisk: React.FC = () => {
   const { project } = useProject();
@@ -11,31 +11,33 @@ export const TabRisk: React.FC = () => {
   const workload = getWorkloadStats(project.tasks, project.team_members);
   const bottlenecks = findBottlenecks(project.tasks);
 
-  // Group risks by severity
   const criticalCount = project.risks.filter(r => r.severity === 'Critical').length;
   const highCount = project.risks.filter(r => r.severity === 'High').length;
   const moderateCount = project.risks.filter(r => r.severity === 'Moderate').length;
   const lowCount = project.risks.filter(r => r.severity === 'Low').length;
 
   return (
-    <div className="space-y-6 pb-20 max-w-7xl mx-auto">
-      {/* Top Banner: Bottlenecks & Executive Warnings */}
+    <div className="space-y-6 max-w-7xl mx-auto">
+      {/* Top Banner: Bottlenecks */}
       {bottlenecks.length > 0 && (
-        <div className="rounded-xl bg-signal-red/10 border border-signal-red/30 p-4 flex flex-wrap items-center justify-between gap-3 backdrop-blur-sm">
+        <div 
+          className="rounded-xl p-4 flex flex-wrap items-center justify-between gap-3 backdrop-blur-sm"
+          style={{ background: 'rgba(255, 59, 92, 0.12)', border: '1px solid rgba(255, 59, 92, 0.35)' }}
+        >
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-signal-red/20 flex items-center justify-center text-signal-red shrink-0">
+            <div className="w-9 h-9 rounded-lg bg-rose-500/20 flex items-center justify-center text-rose-400 shrink-0">
               <AlertOctagon className="w-5 h-5 animate-pulse" />
             </div>
             <div>
-              <h3 className="font-display font-bold text-xs uppercase tracking-wider text-signal-red">
+              <h3 className="font-display font-bold text-xs uppercase tracking-wider text-rose-400">
                 Critical Bottleneck Active
               </h3>
-              <p className="text-xs text-slate-200">
+              <p className="text-xs text-slate-200 mt-0.5">
                 Task <strong>[{bottlenecks[0].taskId}] {bottlenecks[0].title}</strong> is blocking {bottlenecks[0].downstreamCount} dependent paths.
               </p>
             </div>
           </div>
-          <span className="text-xs font-mono font-bold px-2.5 py-1 rounded bg-signal-red/20 text-signal-red border border-signal-red/30">
+          <span className="text-xs font-mono font-bold px-2.5 py-1 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30">
             Escalation Required
           </span>
         </div>
@@ -44,14 +46,17 @@ export const TabRisk: React.FC = () => {
       {/* Main Grid: 5x5 Heatmap & Radar Sweep + Side Panel */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Column: 5x5 Interactive Risk Matrix (7 cols) */}
-        <div className="lg:col-span-7 rounded-2xl bg-night-surface/80 border border-night-border p-6 shadow-xl backdrop-blur-md relative overflow-hidden">
+        <div 
+          className="lg:col-span-7 rounded-2xl p-6 shadow-xl backdrop-blur-md relative overflow-hidden"
+          style={{ background: 'rgba(28, 23, 69, 0.85)', border: '1px solid rgba(177, 75, 255, 0.22)' }}
+        >
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="font-display font-bold text-base text-white flex items-center gap-2">
                 <ShieldCheck className="w-5 h-5 text-plasma" />
                 Dynamic Probability × Impact Matrix
               </h3>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-slate-400 mt-0.5">
                 Interactive 5×5 radar grid. Click any pulsing quantum node to inspect mitigation.
               </p>
             </div>
@@ -59,18 +64,18 @@ export const TabRisk: React.FC = () => {
           </div>
 
           {/* 5x5 Grid Container */}
-          <div className="relative aspect-square max-w-[460px] mx-auto p-2">
+          <div className="relative aspect-square max-w-[440px] mx-auto p-2">
             {/* Radar Sweep Effect */}
-            <div className="absolute inset-2 rounded-xl pointer-events-none overflow-hidden z-10 opacity-30">
+            <div className="absolute inset-2 rounded-xl pointer-events-none overflow-hidden z-10 opacity-25">
               <div 
                 className="w-full h-full rounded-full border border-plasma/40 animate-radar-sweep origin-center"
                 style={{
-                  background: 'conic-gradient(from 0deg, rgba(177, 75, 255, 0.4) 0deg, transparent 60deg, transparent 360deg)'
+                  background: 'conic-gradient(from 0deg, rgba(177, 75, 255, 0.5) 0deg, transparent 60deg, transparent 360deg)'
                 }}
               />
             </div>
 
-            {/* Grid Cells (5 rows for Impact 5 to 1, 5 cols for Prob 1 to 5) */}
+            {/* Grid Cells */}
             <div className="grid grid-cols-5 grid-rows-5 gap-1.5 h-full w-full">
               {[5, 4, 3, 2, 1].map((impact) =>
                 [1, 2, 3, 4, 5].map((prob) => {
@@ -79,16 +84,14 @@ export const TabRisk: React.FC = () => {
                   const isHigh = score >= 12 && score < 16;
                   const isModerate = score >= 6 && score < 12;
 
-                  // Background tint based on severity zone
-                  const cellBg = isCritical
-                    ? 'bg-signal-red/15 hover:bg-signal-red/25 border-signal-red/30'
+                  const cellStyle = isCritical
+                    ? { background: 'rgba(255, 59, 92, 0.16)', borderColor: 'rgba(255, 59, 92, 0.35)' }
                     : isHigh
-                    ? 'bg-signal-amber/15 hover:bg-signal-amber/25 border-signal-amber/30'
+                    ? { background: 'rgba(255, 178, 36, 0.14)', borderColor: 'rgba(255, 178, 36, 0.3)' }
                     : isModerate
-                    ? 'bg-yellow-500/10 hover:bg-yellow-500/20 border-yellow-500/20'
-                    : 'bg-signal-green/10 hover:bg-signal-green/20 border-signal-green/20';
+                    ? { background: 'rgba(234, 179, 8, 0.1)', borderColor: 'rgba(234, 179, 8, 0.22)' }
+                    : { background: 'rgba(46, 230, 166, 0.1)', borderColor: 'rgba(46, 230, 166, 0.22)' };
 
-                  // Check if any risk matches this cell
                   const matchingRisks = project.risks.filter(
                     r => r.probability === prob && r.impact === impact
                   );
@@ -96,36 +99,33 @@ export const TabRisk: React.FC = () => {
                   return (
                     <div
                       key={`${prob}-${impact}`}
-                      className={`relative rounded-lg border flex items-center justify-center transition-all ${cellBg}`}
+                      style={cellStyle}
+                      className="relative rounded-lg border flex items-center justify-center transition-all"
                     >
-                      {/* Cell Coordinate watermark */}
-                      <span className="absolute top-1 left-1 text-[9px] font-mono text-slate-600 font-bold select-none">
+                      <span className="absolute top-1 left-1 text-[9px] font-mono text-slate-500 font-bold select-none">
                         {score}
                       </span>
 
-                      {/* Render Risk Nodes */}
                       {matchingRisks.map((r) => {
                         const isSelected = selectedRisk?.id === r.id;
-                        const dotColor = r.severity === 'Critical'
-                          ? 'bg-signal-red text-white shadow-signal-red/80'
+                        const dotClass = r.severity === 'Critical'
+                          ? 'bg-rose-500 text-white shadow-rose-500/80 ring-rose-400'
                           : r.severity === 'High'
-                          ? 'bg-signal-amber text-black shadow-signal-amber/80'
-                          : 'bg-signal-green text-black shadow-signal-green/80';
+                          ? 'bg-amber-500 text-black shadow-amber-500/80 ring-amber-400'
+                          : 'bg-emerald-400 text-black shadow-emerald-400/80 ring-emerald-300';
 
                         return (
                           <button
                             key={r.id}
                             onClick={() => setSelectedRisk(r)}
-                            className={`relative z-20 w-8 h-8 rounded-full font-mono font-bold text-[10px] flex items-center justify-center transition-transform shadow-lg ${dotColor} ${
+                            className={`relative z-20 w-8 h-8 rounded-full font-mono font-bold text-[10px] flex items-center justify-center transition-transform shadow-lg ${dotClass} ${
                               isSelected ? 'scale-125 ring-2 ring-white z-30' : 'hover:scale-110'
-                            } ${r.severity === 'Critical' ? 'animate-bounce' : ''}`}
+                            }`}
                             title={`${r.id}: ${r.description}`}
                           >
                             {r.id.replace('RSK-', '').replace('RISK-', '')}
-
-                            {/* Pulsing ring for critical */}
                             {r.severity === 'Critical' && (
-                              <span className="absolute inset-0 rounded-full bg-signal-red animate-ping opacity-75 pointer-events-none" />
+                              <span className="absolute inset-0 rounded-full bg-rose-500 animate-ping opacity-75 pointer-events-none" />
                             )}
                           </button>
                         );
@@ -145,23 +145,28 @@ export const TabRisk: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Column: Risk Detail Panel & Severity Donut (5 cols) */}
+        {/* Right Column: Risk Detail Panel */}
         <div className="lg:col-span-5 space-y-5">
-          {/* Selected Risk Inspection Card */}
-          <div className="rounded-2xl bg-night-surface border border-night-border p-5 shadow-xl backdrop-blur-md">
+          <div 
+            className="rounded-2xl p-5 shadow-xl backdrop-blur-md"
+            style={{ background: 'rgba(28, 23, 69, 0.85)', border: '1px solid rgba(177, 75, 255, 0.22)' }}
+          >
             {selectedRisk ? (
               <div className="space-y-3.5">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-plasma/15 text-plasma border border-plasma/30">
+                    <span 
+                      className="font-mono text-xs font-bold px-2 py-0.5 rounded text-plasma"
+                      style={{ background: 'rgba(177, 75, 255, 0.15)', border: '1px solid rgba(177, 75, 255, 0.3)' }}
+                    >
                       {selectedRisk.id}
                     </span>
                     <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${
                       selectedRisk.severity === 'Critical'
-                        ? 'bg-signal-red/20 text-signal-red'
+                        ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
                         : selectedRisk.severity === 'High'
-                        ? 'bg-signal-amber/20 text-signal-amber'
-                        : 'bg-signal-green/20 text-signal-green'
+                        ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                        : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
                     }`}>
                       {selectedRisk.severity} (Score: {selectedRisk.score})
                     </span>
@@ -173,7 +178,10 @@ export const TabRisk: React.FC = () => {
                   {selectedRisk.description}
                 </h4>
 
-                <div className="rounded-xl bg-night-base p-3.5 border border-night-border/70 space-y-2 text-xs">
+                <div 
+                  className="rounded-xl p-3.5 space-y-2 text-xs"
+                  style={{ background: '#0f0e24', border: '1px solid rgba(177, 75, 255, 0.18)' }}
+                >
                   <div className="flex items-center gap-1.5 text-plasma font-bold text-[11px] uppercase tracking-wide">
                     <ShieldCheck className="w-3.5 h-3.5" />
                     <span>Actionable Mitigation Protocol</span>
@@ -194,28 +202,40 @@ export const TabRisk: React.FC = () => {
           </div>
 
           {/* Severity Distribution Pills */}
-          <div className="rounded-2xl bg-night-surface border border-night-border p-5 shadow-xl">
+          <div 
+            className="rounded-2xl p-5 shadow-xl"
+            style={{ background: 'rgba(28, 23, 69, 0.85)', border: '1px solid rgba(177, 75, 255, 0.22)' }}
+          >
             <h4 className="font-display font-bold text-xs uppercase tracking-wider text-slate-300 mb-3">
               Severity Distribution
             </h4>
             <div className="grid grid-cols-2 gap-3">
-              <div className="rounded-xl bg-signal-red/10 border border-signal-red/20 p-3 flex items-center justify-between">
+              <div 
+                className="rounded-xl p-3 flex items-center justify-between"
+                style={{ background: 'rgba(255, 59, 92, 0.12)', border: '1px solid rgba(255, 59, 92, 0.3)' }}
+              >
                 <div>
                   <span className="text-[10px] text-slate-400 font-mono uppercase">Critical</span>
-                  <p className="font-display font-bold text-xl text-signal-red tabular-nums">{criticalCount}</p>
+                  <p className="font-display font-bold text-xl text-rose-400 tabular-nums">{criticalCount}</p>
                 </div>
-                <div className="w-2.5 h-2.5 rounded-full bg-signal-red animate-ping" />
+                <div className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping" />
               </div>
 
-              <div className="rounded-xl bg-signal-amber/10 border border-signal-amber/20 p-3 flex items-center justify-between">
+              <div 
+                className="rounded-xl p-3 flex items-center justify-between"
+                style={{ background: 'rgba(255, 178, 36, 0.12)', border: '1px solid rgba(255, 178, 36, 0.3)' }}
+              >
                 <div>
                   <span className="text-[10px] text-slate-400 font-mono uppercase">High</span>
-                  <p className="font-display font-bold text-xl text-signal-amber tabular-nums">{highCount}</p>
+                  <p className="font-display font-bold text-xl text-amber-400 tabular-nums">{highCount}</p>
                 </div>
-                <div className="w-2.5 h-2.5 rounded-full bg-signal-amber" />
+                <div className="w-2.5 h-2.5 rounded-full bg-amber-400" />
               </div>
 
-              <div className="rounded-xl bg-yellow-500/10 border border-yellow-500/20 p-3 flex items-center justify-between">
+              <div 
+                className="rounded-xl p-3 flex items-center justify-between"
+                style={{ background: 'rgba(234, 179, 8, 0.1)', border: '1px solid rgba(234, 179, 8, 0.25)' }}
+              >
                 <div>
                   <span className="text-[10px] text-slate-400 font-mono uppercase">Moderate</span>
                   <p className="font-display font-bold text-xl text-yellow-400 tabular-nums">{moderateCount}</p>
@@ -223,12 +243,15 @@ export const TabRisk: React.FC = () => {
                 <div className="w-2.5 h-2.5 rounded-full bg-yellow-400" />
               </div>
 
-              <div className="rounded-xl bg-signal-green/10 border border-signal-green/20 p-3 flex items-center justify-between">
+              <div 
+                className="rounded-xl p-3 flex items-center justify-between"
+                style={{ background: 'rgba(46, 230, 166, 0.1)', border: '1px solid rgba(46, 230, 166, 0.25)' }}
+              >
                 <div>
                   <span className="text-[10px] text-slate-400 font-mono uppercase">Low</span>
-                  <p className="font-display font-bold text-xl text-signal-green tabular-nums">{lowCount}</p>
+                  <p className="font-display font-bold text-xl text-emerald-400 tabular-nums">{lowCount}</p>
                 </div>
-                <div className="w-2.5 h-2.5 rounded-full bg-signal-green" />
+                <div className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
               </div>
             </div>
           </div>
@@ -236,27 +259,31 @@ export const TabRisk: React.FC = () => {
       </div>
 
       {/* Wrike Capacity & Workload Balancing Section */}
-      <div className="rounded-2xl bg-night-surface/90 border border-night-border p-6 shadow-xl backdrop-blur-md space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <div>
-            <h3 className="font-display font-bold text-base text-white flex items-center gap-2">
-              <Flame className="w-5 h-5 text-signal-amber" />
-              Smart Resource Workload Balancing (Wrike Optimization)
-            </h3>
-            <p className="text-xs text-slate-400">
-              Evaluates weekly allocated story hours against nominal 40h capacity. Highlights burnout risks that overflow 100%.
-            </p>
-          </div>
+      <div 
+        className="rounded-2xl p-6 shadow-xl backdrop-blur-md space-y-4"
+        style={{ background: 'rgba(28, 23, 69, 0.85)', border: '1px solid rgba(177, 75, 255, 0.22)' }}
+      >
+        <div>
+          <h3 className="font-display font-bold text-base text-white flex items-center gap-2">
+            <Flame className="w-5 h-5 text-amber-400" />
+            Smart Resource Workload Balancing (Wrike Optimization)
+          </h3>
+          <p className="text-xs text-slate-400 mt-0.5">
+            Evaluates weekly allocated story hours against nominal 40h capacity. Highlights burnout risks that overflow 100%.
+          </p>
         </div>
 
-        {/* Member Capacity Bars */}
         <div className="space-y-4 pt-2">
           {workload.map((m) => {
             const barWidth = Math.min(m.loadPct, 100);
             const overflowWidth = Math.max(0, m.loadPct - 100);
 
             return (
-              <div key={m.name} className="space-y-1.5 p-3 rounded-xl bg-night-card border border-night-border/70">
+              <div 
+                key={m.name} 
+                className="space-y-1.5 p-3 rounded-xl"
+                style={{ background: 'rgba(22, 19, 56, 0.85)', border: '1px solid rgba(177, 75, 255, 0.18)' }}
+              >
                 <div className="flex items-center justify-between text-xs">
                   <div className="flex items-center gap-2">
                     <User className="w-3.5 h-3.5 text-slate-400" />
@@ -270,8 +297,8 @@ export const TabRisk: React.FC = () => {
                     </span>
                     <span className={`font-mono font-bold text-xs px-2 py-0.5 rounded ${
                       m.isOverloaded
-                        ? 'bg-signal-red/20 text-signal-red border border-signal-red/30'
-                        : 'bg-signal-green/20 text-signal-green'
+                        ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+                        : 'bg-emerald-500/20 text-emerald-300'
                     }`}>
                       {m.loadPct}%
                     </span>
@@ -279,27 +306,27 @@ export const TabRisk: React.FC = () => {
                 </div>
 
                 {/* Overflow Progress Bar */}
-                <div className="w-full h-3 rounded-full bg-night-base overflow-hidden flex relative">
-                  {/* Nominal capacity bar up to 100% */}
+                <div 
+                  className="w-full h-3 rounded-full overflow-hidden flex relative"
+                  style={{ background: '#12102B' }}
+                >
                   <div
                     className={`h-full transition-all duration-500 ${
-                      m.isOverloaded ? 'bg-signal-amber' : 'bg-plasma'
+                      m.isOverloaded ? 'bg-amber-400' : 'bg-plasma'
                     }`}
                     style={{ width: `${barWidth}%` }}
                   />
-                  {/* Visibly Overflowing Past 100% */}
                   {overflowWidth > 0 && (
                     <div
-                      className="h-full bg-signal-red animate-pulse"
+                      className="h-full bg-rose-500 animate-pulse"
                       style={{ width: `${Math.min(overflowWidth, 40)}%` }}
                       title="Overloaded past 100% capacity"
                     />
                   )}
                 </div>
 
-                {/* Overload Callout */}
                 {m.isOverloaded && (
-                  <p className="text-[11px] text-signal-red flex items-center gap-1 mt-1 font-medium">
+                  <p className="text-[11px] text-rose-400 flex items-center gap-1 mt-1 font-medium">
                     <AlertTriangle className="w-3 h-3" />
                     <span>Burnout Warning: Exceeds sustainable velocity by {m.allocatedHours - m.capacityHours} hours. Rebalance advised.</span>
                   </p>

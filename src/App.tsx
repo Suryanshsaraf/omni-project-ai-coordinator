@@ -22,7 +22,7 @@ export const App: React.FC = () => {
   const blockedCount = project.tasks.filter(t => t.status === 'Blocked').length;
 
   return (
-    <div className="relative min-h-screen bg-night-base text-ice flex flex-col selection:bg-plasma/30">
+    <div className="relative min-h-screen bg-[#12102B] text-[#DDE7FF] flex flex-col selection:bg-purple-600/30">
       {/* Background Simulation */}
       <MissionBackground />
       <SplashCursor />
@@ -31,9 +31,16 @@ export const App: React.FC = () => {
       <TopBar />
 
       {/* Main Content Area */}
-      <main className="relative z-10 flex-1 px-4 sm:px-8 py-6 max-w-7xl mx-auto w-full">
+      <main className="relative z-10 flex-1 px-4 sm:px-8 py-6 max-w-7xl mx-auto w-full pb-28">
         {/* Hero Section: Project Identity + Interactive Energy Orb */}
-        <section className="mb-8 rounded-3xl bg-gradient-to-b from-night-surface/90 to-night-card/70 border border-night-border p-6 sm:p-8 backdrop-blur-xl shadow-2xl overflow-hidden relative">
+        <section 
+          className="mb-8 rounded-3xl p-6 sm:p-8 overflow-hidden relative"
+          style={{
+            background: 'linear-gradient(180deg, rgba(28, 23, 69, 0.9) 0%, rgba(22, 19, 56, 0.75) 100%)',
+            border: '1px solid rgba(177, 75, 255, 0.22)',
+            boxShadow: '0 24px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+          }}
+        >
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
             {/* Identity & Metrics (8 cols) */}
             <div className="lg:col-span-8 space-y-4">
@@ -54,24 +61,36 @@ export const App: React.FC = () => {
 
               {/* Quick Mission Metrics */}
               <div className="flex flex-wrap items-center gap-3 pt-2">
-                <div className="px-3.5 py-1.5 rounded-xl bg-night-base/80 border border-night-border flex items-center gap-2 text-xs font-mono">
+                <div 
+                  className="px-3.5 py-1.5 rounded-xl flex items-center gap-2 text-xs font-mono"
+                  style={{ background: 'rgba(18, 16, 43, 0.85)', border: '1px solid rgba(177, 75, 255, 0.2)' }}
+                >
                   <span className="text-slate-400">Velocity:</span>
                   <strong className="text-white tabular-nums">{velocityPct}%</strong>
                 </div>
 
-                <div className="px-3.5 py-1.5 rounded-xl bg-night-base/80 border border-night-border flex items-center gap-2 text-xs font-mono">
+                <div 
+                  className="px-3.5 py-1.5 rounded-xl flex items-center gap-2 text-xs font-mono"
+                  style={{ background: 'rgba(18, 16, 43, 0.85)', border: '1px solid rgba(177, 75, 255, 0.2)' }}
+                >
                   <span className="text-slate-400">Tasks:</span>
                   <strong className="text-white tabular-nums">{project.tasks.length}</strong>
                 </div>
 
-                <div className={`px-3.5 py-1.5 rounded-xl border flex items-center gap-2 text-xs font-mono ${
-                  blockedCount > 0 ? 'bg-signal-red/15 border-signal-red/30 text-signal-red' : 'bg-night-base/80 border-night-border text-slate-400'
-                }`}>
+                <div 
+                  className={`px-3.5 py-1.5 rounded-xl flex items-center gap-2 text-xs font-mono ${
+                    blockedCount > 0 ? 'bg-rose-500/15 border-rose-500/40 text-rose-300' : 'text-slate-400'
+                  }`}
+                  style={{ border: blockedCount > 0 ? '1px solid rgba(255, 59, 92, 0.4)' : '1px solid rgba(177, 75, 255, 0.2)', background: blockedCount > 0 ? 'rgba(255, 59, 92, 0.15)' : 'rgba(18, 16, 43, 0.85)' }}
+                >
                   <span>Blockers:</span>
-                  <strong className="tabular-nums">{blockedCount}</strong>
+                  <strong className="tabular-nums font-bold">{blockedCount}</strong>
                 </div>
 
-                <div className="px-3.5 py-1.5 rounded-xl bg-night-base/80 border border-night-border flex items-center gap-2 text-xs font-mono">
+                <div 
+                  className="px-3.5 py-1.5 rounded-xl flex items-center gap-2 text-xs font-mono"
+                  style={{ background: 'rgba(18, 16, 43, 0.85)', border: '1px solid rgba(177, 75, 255, 0.2)' }}
+                >
                   <span className="text-slate-400">Team:</span>
                   <strong className="text-white tabular-nums">{project.team_members.length} Leads</strong>
                 </div>

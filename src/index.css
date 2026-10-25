@@ -2,17 +2,77 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --night-base: #12102B;
+  --night-card: #161338;
+  --night-surface: #1C1745;
+  --night-panel: #221D54;
+  --night-border: rgba(177, 75, 255, 0.16);
+  --plasma: #B14BFF;
+  --signal-amber: #FFB224;
+  --signal-green: #2EE6A6;
+  --signal-red: #FF3B5C;
+  --ice: #DDE7FF;
+}
+
 @layer base {
+  * {
+    border-color: rgba(177, 75, 255, 0.16);
+  }
+
   body {
     background-color: #12102B;
     color: #DDE7FF;
-    font-family: 'Instrument Sans', sans-serif;
+    font-family: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
     font-variant-numeric: tabular-nums;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  /* Force all form controls to be dark and styled */
+  input, textarea, select {
+    background-color: #12102B !important;
+    color: #DDE7FF !important;
+    border: 1px solid rgba(177, 75, 255, 0.2) !important;
+    outline: none !important;
+  }
+
+  input:focus, textarea:focus, select:focus {
+    border-color: #B14BFF !important;
+    box-shadow: 0 0 0 2px rgba(177, 75, 255, 0.25) !important;
+  }
+
+  button {
+    font-family: inherit;
+    cursor: pointer;
   }
 }
 
-/* Custom Mission Control Scrollbar */
+/* Glass Surfaces */
+.glass-panel {
+  background: rgba(28, 23, 69, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(177, 75, 255, 0.18);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+
+.glass-card {
+  background: rgba(22, 19, 56, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(177, 75, 255, 0.14);
+}
+
+.glass-pill {
+  background: rgba(28, 23, 69, 0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(177, 75, 255, 0.2);
+}
+
+/* Mission Control Scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -23,19 +83,20 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(177, 75, 255, 0.25);
+  background: rgba(177, 75, 255, 0.3);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(177, 75, 255, 0.5);
+  background: rgba(177, 75, 255, 0.6);
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
+/* Animations */
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.85; filter: drop-shadow(0 0 12px rgba(177, 75, 255, 0.3)); }
+  50% { opacity: 1; filter: drop-shadow(0 0 24px rgba(177, 75, 255, 0.6)); }
 }
 
-.animate-fadeIn {
-  animation: fadeIn 0.25s ease-out forwards;
+.animate-pulseGlow {
+  animation: pulseGlow 4s ease-in-out infinite;
 }

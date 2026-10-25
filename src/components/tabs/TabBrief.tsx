@@ -14,9 +14,9 @@ export const TabBrief: React.FC = () => {
   const completionPct = totalPoints > 0 ? Math.round((donePoints / totalPoints) * 100) : 0;
 
   const ragPillColor = {
-    green: 'bg-signal-green/20 text-signal-green border-signal-green/30',
-    amber: 'bg-signal-amber/20 text-signal-amber border-signal-amber/30',
-    red: 'bg-signal-red/20 text-signal-red border-signal-red/30'
+    green: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+    amber: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+    red: 'bg-rose-500/20 text-rose-300 border-rose-500/30'
   }[ragStatus];
 
   const briefMarkdownText = `# 📈 Executive Health Brief: ${project.title}
@@ -52,15 +52,18 @@ ${project.risks.filter(r => r.severity === 'Critical' || r.severity === 'High').
   };
 
   return (
-    <div className="space-y-6 pb-20 max-w-4xl mx-auto">
+    <div className="space-y-6 max-w-4xl mx-auto">
       {/* Brief Header & Action Bar */}
-      <div className="rounded-2xl bg-night-surface/90 border border-night-border p-6 shadow-xl backdrop-blur-md flex flex-wrap items-center justify-between gap-4">
+      <div 
+        className="rounded-2xl p-6 shadow-xl backdrop-blur-md flex flex-wrap items-center justify-between gap-4"
+        style={{ background: 'rgba(28, 23, 69, 0.85)', border: '1px solid rgba(177, 75, 255, 0.22)' }}
+      >
         <div>
           <h2 className="font-display font-bold text-lg text-white flex items-center gap-2">
             <TrendingUp className="w-5 h-5 text-plasma" />
             C-Suite Executive Status Brief
           </h2>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-slate-400 mt-1">
             Synthesized briefing document for VP of Product, Engineering Leadership, and C-Suite.
           </p>
         </div>
@@ -68,9 +71,10 @@ ${project.risks.filter(r => r.severity === 'Critical' || r.severity === 'High').
         <div className="flex items-center gap-2">
           <button
             onClick={handleCopy}
-            className="px-3.5 py-2 rounded-xl bg-night-card hover:bg-night-panel border border-night-border text-xs text-slate-300 hover:text-white flex items-center gap-1.5 transition-colors"
+            className="px-3.5 py-2 rounded-xl text-xs text-slate-300 hover:text-white flex items-center gap-1.5 transition-colors"
+            style={{ background: 'rgba(22, 19, 56, 0.9)', border: '1px solid rgba(177, 75, 255, 0.2)' }}
           >
-            {copied ? <Check className="w-3.5 h-3.5 text-signal-green" /> : <Copy className="w-3.5 h-3.5" />}
+            {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
             <span>{copied ? 'Copied' : 'Copy Brief'}</span>
           </button>
 
@@ -85,9 +89,12 @@ ${project.risks.filter(r => r.severity === 'Critical' || r.severity === 'High').
       </div>
 
       {/* Editorial Document Body */}
-      <div className="rounded-2xl bg-night-surface border border-night-border p-6 sm:p-10 shadow-2xl space-y-6 text-ice">
+      <div 
+        className="rounded-2xl p-6 sm:p-10 shadow-2xl space-y-6 text-ice"
+        style={{ background: 'rgba(28, 23, 69, 0.9)', border: '1px solid rgba(177, 75, 255, 0.22)' }}
+      >
         {/* Document Title & Meta */}
-        <div className="pb-6 border-b border-night-border flex flex-wrap items-center justify-between gap-4">
+        <div className="pb-6 border-b border-purple-500/20 flex flex-wrap items-center justify-between gap-4">
           <div>
             <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400">
               Technical Program Management Brief
@@ -112,17 +119,20 @@ ${project.risks.filter(r => r.severity === 'Critical' || r.severity === 'High').
 
         {/* Section 1: Accomplishments */}
         <div className="space-y-3">
-          <h3 className="font-display font-bold text-sm text-signal-green uppercase tracking-wide flex items-center gap-2">
+          <h3 className="font-display font-bold text-sm text-emerald-400 uppercase tracking-wide flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4" />
             1. Key Milestones Completed
           </h3>
-          <div className="rounded-xl bg-night-base/80 p-4 border border-night-border/70 space-y-2 text-xs">
+          <div 
+            className="rounded-xl p-4 space-y-2 text-xs"
+            style={{ background: '#0e0d22', border: '1px solid rgba(177, 75, 255, 0.18)' }}
+          >
             {doneTasks.length === 0 ? (
               <p className="text-slate-400 italic">No tasks marked Done in this sprint yet.</p>
             ) : (
               doneTasks.map(t => (
                 <div key={t.id} className="flex items-start gap-2 text-slate-300">
-                  <span className="text-signal-green font-bold">✓</span>
+                  <span className="text-emerald-400 font-bold">✓</span>
                   <span><strong>[{t.id}] {t.title}</strong> — Delivered by {t.assignee} ({t.story_points} Pts)</span>
                 </div>
               ))
@@ -132,16 +142,23 @@ ${project.risks.filter(r => r.severity === 'Critical' || r.severity === 'High').
 
         {/* Section 2: Critical Blockers */}
         <div className="space-y-3">
-          <h3 className="font-display font-bold text-sm text-signal-red uppercase tracking-wide flex items-center gap-2">
+          <h3 className="font-display font-bold text-sm text-rose-400 uppercase tracking-wide flex items-center gap-2">
             <AlertOctagon className="w-4 h-4" />
             2. Critical Blockers & Escalations Required
           </h3>
-          <div className="rounded-xl bg-night-base/80 p-4 border border-night-border/70 space-y-2.5 text-xs">
+          <div 
+            className="rounded-xl p-4 space-y-2.5 text-xs"
+            style={{ background: '#0e0d22', border: '1px solid rgba(177, 75, 255, 0.18)' }}
+          >
             {blockedTasks.length === 0 ? (
-              <p className="text-signal-green font-semibold">No active blockers. Critical path is clear.</p>
+              <p className="text-emerald-400 font-semibold">No active blockers. Critical path is clear.</p>
             ) : (
               blockedTasks.map(t => (
-                <div key={t.id} className="p-3 rounded-lg bg-signal-red/10 border border-signal-red/30 text-signal-red space-y-1">
+                <div 
+                  key={t.id} 
+                  className="p-3 rounded-lg text-rose-300 space-y-1"
+                  style={{ background: 'rgba(255, 59, 92, 0.12)', border: '1px solid rgba(255, 59, 92, 0.3)' }}
+                >
                   <p className="font-bold">[{t.id}] {t.title}</p>
                   <p className="text-slate-200">Impact: Halts subsequent sprint deliverables. Reason: <em>{t.blocker_reason}</em></p>
                   <p className="text-[11px] font-mono text-slate-400">Assignee: {t.assignee} • Escalation Target: VP of Engineering</p>
@@ -153,16 +170,19 @@ ${project.risks.filter(r => r.severity === 'Critical' || r.severity === 'High').
 
         {/* Section 3: Risk Summary */}
         <div className="space-y-3">
-          <h3 className="font-display font-bold text-sm text-signal-amber uppercase tracking-wide flex items-center gap-2">
+          <h3 className="font-display font-bold text-sm text-amber-400 uppercase tracking-wide flex items-center gap-2">
             <FileText className="w-4 h-4" />
             3. Predictive Risk Horizon & Mitigations
           </h3>
-          <div className="rounded-xl bg-night-base/80 p-4 border border-night-border/70 space-y-2 text-xs">
+          <div 
+            className="rounded-xl p-4 space-y-2 text-xs"
+            style={{ background: '#0e0d22', border: '1px solid rgba(177, 75, 255, 0.18)' }}
+          >
             {project.risks.filter(r => r.severity === 'Critical' || r.severity === 'High').map(r => (
-              <div key={r.id} className="p-2.5 border-b border-night-border/40 last:border-0">
+              <div key={r.id} className="p-2.5 border-b border-purple-500/15 last:border-0">
                 <div className="flex items-center justify-between text-slate-200 font-semibold mb-1">
                   <span>[{r.id}] {r.description}</span>
-                  <span className="font-mono text-signal-amber font-bold">Score: {r.score}</span>
+                  <span className="font-mono text-amber-400 font-bold">Score: {r.score}</span>
                 </div>
                 <p className="text-slate-400">Mitigation: {r.mitigation_strategy} (Owner: {r.owner})</p>
               </div>

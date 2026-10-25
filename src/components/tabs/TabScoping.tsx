@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useProject } from '../../context/ProjectContext';
-import { Sparkles, Play, UploadCloud, CheckCircle2, ChevronDown, ChevronRight, Layers, FileCode, Clock } from 'lucide-react';
+import { Sparkles, Play, UploadCloud, CheckCircle2, ChevronDown, ChevronRight, Layers, FileCode } from 'lucide-react';
 import { Task, Epic } from '../../types';
 
 export const TabScoping: React.FC = () => {
@@ -28,7 +28,6 @@ export const TabScoping: React.FC = () => {
     addAgentLog('SYNTHESIZE_INITIATED', `Prompt engine executing WBS decomposition (${methodology}, ${sprintWeeks}w)`, 'info');
 
     try {
-      // Attempt backend API call if running on Vercel/serverless
       const res = await fetch('/api/scoping', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -56,11 +55,9 @@ export const TabScoping: React.FC = () => {
           return;
         }
       }
-    } catch (e) {
-      // Graceful offline heuristic synthesis fallback
-    }
+    } catch (e) {}
 
-    // High-quality local heuristic synthesis
+    // Graceful offline heuristic fallback
     setTimeout(() => {
       const generatedEpics: Epic[] = [
         { id: 'EPIC-10', title: 'Multi-Channel Ingestion & Kafka Telemetry Queue', priority: 'Urgent', description: 'Real-time webhook listeners for WhatsApp and Zendesk APIs.' },
@@ -133,19 +130,22 @@ export const TabScoping: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 pb-20 max-w-5xl mx-auto">
+    <div className="space-y-6 max-w-5xl mx-auto">
       {/* Spotlight Card: Requirement Brief Input */}
-      <div className="relative rounded-2xl bg-night-surface/90 border border-night-border p-6 shadow-xl backdrop-blur-md overflow-hidden">
-        {/* Glow ambient accent */}
-        <div className="absolute top-0 right-0 w-80 h-80 bg-plasma/10 rounded-full blur-3xl pointer-events-none" />
-
+      <div 
+        className="rounded-2xl p-6 shadow-xl backdrop-blur-md overflow-hidden relative"
+        style={{
+          background: 'rgba(28, 23, 69, 0.85)',
+          border: '1px solid rgba(177, 75, 255, 0.22)'
+        }}
+      >
         <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
           <div>
             <h2 className="font-display font-bold text-lg text-white flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-plasma" />
               Scoping & Work Breakdown Structure (WBS)
             </h2>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-xs text-slate-400 mt-1">
               Advanced context-rich prompt decomposes ambiguous requirements into Epics, User Stories, and testable Gherkin acceptance criteria.
             </p>
           </div>
@@ -153,48 +153,50 @@ export const TabScoping: React.FC = () => {
           <div className="flex items-center gap-2">
             <button
               onClick={handleSyncClickUp}
-              className="px-3 py-1.5 rounded-lg bg-night-card hover:bg-night-panel border border-night-border text-xs font-medium text-ice hover:text-white transition-all flex items-center gap-1.5"
+              className="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-200 hover:text-white transition-all flex items-center gap-1.5"
+              style={{ background: 'rgba(22, 19, 56, 0.9)', border: '1px solid rgba(177, 75, 255, 0.2)' }}
             >
               <UploadCloud className="w-3.5 h-3.5 text-plasma" />
               <span>Sync ClickUp</span>
             </button>
             <button
               onClick={handleSyncTrello}
-              className="px-3 py-1.5 rounded-lg bg-night-card hover:bg-night-panel border border-night-border text-xs font-medium text-ice hover:text-white transition-all flex items-center gap-1.5"
+              className="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-200 hover:text-white transition-all flex items-center gap-1.5"
+              style={{ background: 'rgba(22, 19, 56, 0.9)', border: '1px solid rgba(177, 75, 255, 0.2)' }}
             >
-              <UploadCloud className="w-3.5 h-3.5 text-signal-green" />
+              <UploadCloud className="w-3.5 h-3.5 text-emerald-400" />
               <span>Sync Trello</span>
             </button>
           </div>
         </div>
 
         {syncStatus && (
-          <div className="mb-4 px-3.5 py-2 rounded-lg bg-signal-green/10 border border-signal-green/30 text-signal-green text-xs flex items-center gap-2 animate-fadeIn">
+          <div className="mb-4 px-3.5 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4" />
             <span>{syncStatus}</span>
           </div>
         )}
 
         {/* Textarea */}
-        <div className="relative">
-          <textarea
-            rows={3}
-            value={brief}
-            onChange={(e) => setBrief(e.target.value)}
-            className="w-full rounded-xl bg-night-base/80 border border-night-border p-4 text-xs sm:text-sm text-ice focus:outline-none focus:border-plasma focus:ring-1 focus:ring-plasma transition-all font-mono leading-relaxed resize-none"
-            placeholder="Type raw client requirement, user specs, or feature request..."
-          />
-        </div>
+        <textarea
+          rows={3}
+          value={brief}
+          onChange={(e) => setBrief(e.target.value)}
+          style={{ background: '#12102B', color: '#DDE7FF', border: '1px solid rgba(177, 75, 255, 0.25)' }}
+          className="w-full rounded-xl p-4 text-xs sm:text-sm font-mono leading-relaxed resize-none"
+          placeholder="Type raw client requirement, user specs, or feature request..."
+        />
 
         {/* Controls Bar */}
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-night-border/60">
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-purple-500/20">
           <div className="flex flex-wrap items-center gap-4 text-xs">
             <div className="flex items-center gap-2">
               <span className="text-slate-400">Methodology:</span>
               <select
                 value={methodology}
                 onChange={(e) => setMethodology(e.target.value)}
-                className="bg-night-card border border-night-border rounded-lg px-2.5 py-1 text-ice text-xs focus:outline-none focus:border-plasma"
+                style={{ background: '#12102B', color: '#DDE7FF', border: '1px solid rgba(177, 75, 255, 0.25)' }}
+                className="rounded-lg px-2.5 py-1 text-xs"
               >
                 <option value="Agile / Scrum">Agile / Scrum</option>
                 <option value="Kanban / Continuous Flow">Kanban / Continuous Flow</option>
@@ -204,7 +206,10 @@ export const TabScoping: React.FC = () => {
 
             <div className="flex items-center gap-2">
               <span className="text-slate-400">Sprint Cadence:</span>
-              <div className="flex items-center gap-1 bg-night-card border border-night-border rounded-lg p-0.5">
+              <div 
+                className="flex items-center gap-1 rounded-lg p-0.5"
+                style={{ background: 'rgba(18, 16, 43, 0.9)', border: '1px solid rgba(177, 75, 255, 0.2)' }}
+              >
                 {[1, 2, 3, 4].map((w) => (
                   <button
                     key={w}
@@ -220,11 +225,11 @@ export const TabScoping: React.FC = () => {
             </div>
           </div>
 
-          {/* StarBorder Action Button */}
+          {/* Action Button */}
           <button
             onClick={handleSynthesize}
             disabled={isGenerating}
-            className="relative group px-5 py-2 rounded-xl bg-gradient-to-r from-plasma to-indigo-600 text-white font-medium text-xs shadow-lg shadow-plasma/30 hover:shadow-plasma/50 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2 disabled:opacity-50"
+            className="px-5 py-2 rounded-xl bg-gradient-to-r from-plasma to-indigo-600 text-white font-medium text-xs shadow-lg shadow-plasma/30 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2 disabled:opacity-50"
           >
             {isGenerating ? (
               <>
@@ -241,7 +246,7 @@ export const TabScoping: React.FC = () => {
         </div>
       </div>
 
-      {/* Epics & User Stories Stream (MagicBento view) */}
+      {/* Epics & User Stories Stream */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="font-display font-semibold text-sm text-white flex items-center gap-2">
@@ -260,15 +265,19 @@ export const TabScoping: React.FC = () => {
           return (
             <div
               key={epic.id}
-              className="rounded-xl bg-night-surface/60 border border-night-border overflow-hidden backdrop-blur-sm transition-all"
+              className="rounded-xl overflow-hidden backdrop-blur-sm transition-all"
+              style={{
+                background: 'rgba(28, 23, 69, 0.75)',
+                border: '1px solid rgba(177, 75, 255, 0.2)'
+              }}
             >
               {/* Epic Header */}
               <button
                 onClick={() => toggleEpic(epic.id)}
-                className="w-full px-5 py-3.5 flex items-center justify-between text-left hover:bg-white/[0.02] transition-colors"
+                className="w-full px-5 py-3.5 flex items-center justify-between text-left hover:bg-white/[0.03] transition-colors"
               >
                 <div className="flex items-center gap-3">
-                  <span className="font-mono text-xs font-bold text-plasma bg-plasma/10 px-2 py-0.5 rounded border border-plasma/20">
+                  <span className="font-mono text-xs font-bold text-plasma bg-plasma/15 px-2 py-0.5 rounded border border-plasma/30">
                     {epic.id}
                   </span>
                   <div>
@@ -291,25 +300,31 @@ export const TabScoping: React.FC = () => {
 
               {/* Tasks under Epic */}
               {isExpanded && (
-                <div className="divide-y divide-night-border/40 border-t border-night-border/60 bg-night-base/40">
+                <div className="divide-y divide-purple-500/10 border-t border-purple-500/20" style={{ background: 'rgba(18, 16, 43, 0.6)' }}>
                   {epicTasks.map((task) => (
                     <div key={task.id} className="p-4 sm:p-5 hover:bg-white/[0.015] transition-colors">
                       <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
                         <div className="flex items-center gap-2">
-                          <span className="font-mono text-xs text-slate-400 font-semibold">{task.id}</span>
+                          <span className="font-mono text-xs text-slate-400 font-bold">{task.id}</span>
                           <h5 className="font-sans font-medium text-sm text-ice">{task.title}</h5>
                         </div>
                         <div className="flex items-center gap-2 text-xs">
-                          <span className="px-2 py-0.5 rounded bg-night-card border border-night-border text-slate-300 font-mono">
+                          <span 
+                            className="px-2 py-0.5 rounded font-mono text-slate-300"
+                            style={{ background: 'rgba(22, 19, 56, 0.9)', border: '1px solid rgba(177, 75, 255, 0.2)' }}
+                          >
                             🎯 {task.story_points} Pts
                           </span>
-                          <span className="px-2 py-0.5 rounded bg-night-card border border-night-border text-slate-300 font-mono">
+                          <span 
+                            className="px-2 py-0.5 rounded font-mono text-slate-300"
+                            style={{ background: 'rgba(22, 19, 56, 0.9)', border: '1px solid rgba(177, 75, 255, 0.2)' }}
+                          >
                             ⏱️ {task.estimated_hours}h
                           </span>
                           <span className={`px-2 py-0.5 rounded font-mono font-medium ${
                             task.priority === 'Urgent'
-                              ? 'bg-signal-red/20 text-signal-red border border-signal-red/30'
-                              : 'bg-signal-amber/20 text-signal-amber border border-signal-amber/30'
+                              ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+                              : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
                           }`}>
                             {task.priority}
                           </span>
@@ -321,13 +336,16 @@ export const TabScoping: React.FC = () => {
                         "{task.user_story}"
                       </p>
 
-                      {/* Gherkin Criteria Box with Decrypted visual aesthetic */}
-                      <div className="rounded-lg bg-night-card/80 border border-night-border/70 p-3 text-xs font-mono">
+                      {/* Gherkin Criteria Box */}
+                      <div 
+                        className="rounded-lg p-3 text-xs font-mono"
+                        style={{ background: '#0d0c20', border: '1px solid rgba(177, 75, 255, 0.18)' }}
+                      >
                         <div className="flex items-center gap-1.5 text-plasma text-[11px] font-bold uppercase tracking-wider mb-1">
                           <FileCode className="w-3.5 h-3.5" />
                           <span>Gherkin Acceptance Criteria</span>
                         </div>
-                        <p className="text-slate-300 leading-relaxed">
+                        <p className="text-slate-300 leading-relaxed font-sans text-xs">
                           {task.acceptance_criteria}
                         </p>
                       </div>
@@ -335,7 +353,7 @@ export const TabScoping: React.FC = () => {
                       <div className="mt-2.5 flex items-center justify-between text-xs text-slate-400">
                         <span>Assignee: <strong className="text-slate-200">{task.assignee}</strong></span>
                         <span className={`px-2 py-0.5 rounded text-[11px] font-mono ${
-                          task.status === 'Done' ? 'text-signal-green' : task.status === 'Blocked' ? 'text-signal-red' : 'text-slate-400'
+                          task.status === 'Done' ? 'text-emerald-400' : task.status === 'Blocked' ? 'text-rose-400' : 'text-slate-400'
                         }`}>
                           Status: {task.status}
                         </span>
