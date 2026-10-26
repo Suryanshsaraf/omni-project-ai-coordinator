@@ -52,6 +52,7 @@ export const MissionOrb: React.FC = () => {
       red: { core: '#FF3B5C', glow: 'rgba(255, 59, 92, 0.55)', arc: '#FFB224', speed: 0.06 }
     };
 
+    let angle = 0;
     const isWhite = theme === 'white';
 
     const renderOrb = () => {

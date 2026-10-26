@@ -8,6 +8,8 @@ export const ThemeToggle: React.FC = () => {
 
   return (
     <button
+      id="theme-toggle-btn"
+      data-testid="theme-toggle"
       onClick={toggleTheme}
       type="button"
       role="switch"
