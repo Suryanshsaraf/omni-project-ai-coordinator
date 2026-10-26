@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useProject } from '../../context/ProjectContext';
 
 export const MissionOrb: React.FC = () => {
-  const { ragStatus, healthScore } = useProject();
+  const { ragStatus, healthScore, theme } = useProject();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [displayScore, setDisplayScore] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
@@ -52,18 +52,18 @@ export const MissionOrb: React.FC = () => {
       red: { core: '#FF3B5C', glow: 'rgba(255, 59, 92, 0.55)', arc: '#FFB224', speed: 0.06 }
     };
 
-    let angle = 0;
+    const isWhite = theme === 'white';
 
     const renderOrb = () => {
-      const theme = colors[ragStatus];
-      angle += theme.speed * (isHovered ? 1.8 : 1);
+      const activeTheme = colors[ragStatus];
+      angle += activeTheme.speed * (isHovered ? 1.8 : 1);
 
       ctx.clearRect(0, 0, size, size);
 
       // Outer Glow Aura
       const radGlow = ctx.createRadialGradient(centerX, centerY, 30, centerX, centerY, 120);
-      radGlow.addColorStop(0, theme.glow);
-      radGlow.addColorStop(0.7, 'rgba(28, 23, 69, 0.2)');
+      radGlow.addColorStop(0, activeTheme.glow);
+      radGlow.addColorStop(0.7, isWhite ? 'rgba(255, 255, 255, 0.2)' : 'rgba(20, 20, 20, 0.3)');
       radGlow.addColorStop(1, 'transparent');
       ctx.fillStyle = radGlow;
       ctx.beginPath();
@@ -74,9 +74,9 @@ export const MissionOrb: React.FC = () => {
       ctx.save();
       ctx.translate(centerX, centerY);
       ctx.rotate(angle);
-      ctx.strokeStyle = theme.core;
+      ctx.strokeStyle = activeTheme.core;
       ctx.lineWidth = 2.5;
-      ctx.shadowColor = theme.core;
+      ctx.shadowColor = activeTheme.core;
       ctx.shadowBlur = 12;
       ctx.beginPath();
       ctx.ellipse(0, 0, 92, 42, Math.PI / 4, 0, Math.PI * 2);
@@ -100,7 +100,7 @@ export const MissionOrb: React.FC = () => {
       ctx.save();
       ctx.translate(centerX, centerY);
       ctx.rotate(angle * 0.7);
-      ctx.strokeStyle = 'rgba(221, 231, 255, 0.25)';
+      ctx.strokeStyle = isWhite ? 'rgba(15, 23, 42, 0.2)' : 'rgba(255, 255, 255, 0.2)';
       ctx.lineWidth = 1;
       ctx.shadowBlur = 0;
       ctx.beginPath();
@@ -110,8 +110,8 @@ export const MissionOrb: React.FC = () => {
       // Orbiting Quantum Node
       const nodeX = Math.cos(angle * 2) * 108;
       const nodeY = Math.sin(angle * 2) * 108;
-      ctx.fillStyle = theme.core;
-      ctx.shadowColor = theme.core;
+      ctx.fillStyle = activeTheme.core;
+      ctx.shadowColor = activeTheme.core;
       ctx.shadowBlur = 14;
       ctx.beginPath();
       ctx.arc(nodeX, nodeY, 4.5, 0, Math.PI * 2);
@@ -127,19 +127,25 @@ export const MissionOrb: React.FC = () => {
         centerY,
         70
       );
-      sphereGrad.addColorStop(0, 'rgba(255, 255, 255, 0.35)');
-      sphereGrad.addColorStop(0.4, 'rgba(28, 23, 69, 0.6)');
-      sphereGrad.addColorStop(1, 'rgba(18, 16, 43, 0.95)');
+      if (isWhite) {
+        sphereGrad.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
+        sphereGrad.addColorStop(0.4, 'rgba(241, 245, 249, 0.85)');
+        sphereGrad.addColorStop(1, 'rgba(226, 232, 240, 0.95)');
+      } else {
+        sphereGrad.addColorStop(0, 'rgba(255, 255, 255, 0.25)');
+        sphereGrad.addColorStop(0.4, 'rgba(18, 18, 18, 0.7)');
+        sphereGrad.addColorStop(1, 'rgba(0, 0, 0, 0.95)');
+      }
 
       ctx.fillStyle = sphereGrad;
-      ctx.shadowColor = theme.core;
+      ctx.shadowColor = activeTheme.core;
       ctx.shadowBlur = 24;
       ctx.beginPath();
       ctx.arc(centerX, centerY, 70, 0, Math.PI * 2);
       ctx.fill();
 
       // Rim Border
-      ctx.strokeStyle = theme.core;
+      ctx.strokeStyle = activeTheme.core;
       ctx.lineWidth = 1.5;
       ctx.stroke();
 
@@ -149,7 +155,7 @@ export const MissionOrb: React.FC = () => {
     renderOrb();
 
     return () => cancelAnimationFrame(animId);
-  }, [ragStatus, isHovered]);
+  }, [ragStatus, isHovered, theme]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -194,7 +200,10 @@ export const MissionOrb: React.FC = () => {
             Health Core
           </span>
           <div className="flex items-baseline gap-0.5">
-            <span className="font-display text-4xl sm:text-5xl font-black text-white tracking-tighter tabular-nums drop-shadow-md">
+            <span 
+              className="font-display text-4xl sm:text-5xl font-black tracking-tighter tabular-nums drop-shadow-md transition-colors"
+              style={{ color: theme === 'white' ? '#0F172A' : '#FFFFFF' }}
+            >
               {displayScore}
             </span>
             <span className="text-sm font-mono text-slate-400">/100</span>

@@ -2,45 +2,101 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --night-base: #12102B;
-  --night-card: #161338;
-  --night-surface: #1C1745;
-  --night-panel: #221D54;
-  --night-border: rgba(177, 75, 255, 0.16);
+:root,
+.theme-black {
+  --night-base: #000000;
+  --night-card: #0a0a0a;
+  --night-surface: #111111;
+  --night-panel: #171717;
+  --night-border: rgba(255, 255, 255, 0.12);
+  --night-hover: rgba(255, 255, 255, 0.08);
   --plasma: #B14BFF;
   --signal-amber: #FFB224;
   --signal-green: #2EE6A6;
   --signal-red: #FF3B5C;
-  --ice: #DDE7FF;
+  --ice: #F3F4F6;
+
+  --app-bg: #000000;
+  --app-text: #F9FAFB;
+  --app-text-muted: #9CA3AF;
+  --app-card-bg: rgba(14, 14, 14, 0.9);
+  --app-surface-bg: rgba(20, 20, 20, 0.85);
+  --app-inset-bg: rgba(8, 8, 8, 0.95);
+  --app-border: rgba(255, 255, 255, 0.12);
+  --hero-bg: linear-gradient(180deg, rgba(16, 16, 16, 0.95) 0%, rgba(6, 6, 6, 0.9) 100%);
+  --hero-border: rgba(255, 255, 255, 0.14);
+  --topbar-bg: rgba(8, 8, 8, 0.88);
+  --topbar-border: rgba(255, 255, 255, 0.12);
+  --dock-bg: rgba(12, 12, 12, 0.94);
+  --dock-border: rgba(255, 255, 255, 0.18);
+  --input-bg: #0a0a0a;
+  --input-text: #FFFFFF;
+  --input-border: rgba(255, 255, 255, 0.18);
+  --canvas-bg: #000000;
+  --canvas-star: #FFFFFF;
+}
+
+.theme-white,
+[data-theme="white"] {
+  --night-base: #F8FAFC;
+  --night-card: #FFFFFF;
+  --night-surface: #F1F5F9;
+  --night-panel: #E2E8F0;
+  --night-border: rgba(0, 0, 0, 0.1);
+  --night-hover: rgba(0, 0, 0, 0.05);
+  --plasma: #8B5CF6;
+  --signal-amber: #D97706;
+  --signal-green: #059669;
+  --signal-red: #E11D48;
+  --ice: #0F172A;
+
+  --app-bg: #F8FAFC;
+  --app-text: #0F172A;
+  --app-text-muted: #475569;
+  --app-card-bg: rgba(255, 255, 255, 0.95);
+  --app-surface-bg: rgba(248, 250, 252, 0.92);
+  --app-inset-bg: rgba(241, 245, 249, 0.95);
+  --app-border: rgba(0, 0, 0, 0.1);
+  --hero-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(241, 245, 249, 0.95) 100%);
+  --hero-border: rgba(0, 0, 0, 0.12);
+  --topbar-bg: rgba(255, 255, 255, 0.92);
+  --topbar-border: rgba(0, 0, 0, 0.1);
+  --dock-bg: rgba(255, 255, 255, 0.96);
+  --dock-border: rgba(0, 0, 0, 0.15);
+  --input-bg: #FFFFFF;
+  --input-text: #0F172A;
+  --input-border: rgba(0, 0, 0, 0.2);
+  --canvas-bg: #F8FAFC;
+  --canvas-star: #475569;
 }
 
 @layer base {
   * {
-    border-color: rgba(177, 75, 255, 0.16);
+    border-color: var(--app-border);
   }
 
   body {
-    background-color: #12102B;
-    color: #DDE7FF;
+    background-color: var(--app-bg);
+    color: var(--app-text);
     font-family: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
     font-variant-numeric: tabular-nums;
     margin: 0;
     padding: 0;
     overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
-  /* Force all form controls to be dark and styled */
+  /* Force all form controls to be styled to the active theme */
   input, textarea, select {
-    background-color: #12102B !important;
-    color: #DDE7FF !important;
-    border: 1px solid rgba(177, 75, 255, 0.2) !important;
+    background-color: var(--input-bg) !important;
+    color: var(--input-text) !important;
+    border: 1px solid var(--input-border) !important;
     outline: none !important;
   }
 
   input:focus, textarea:focus, select:focus {
-    border-color: #B14BFF !important;
+    border-color: var(--plasma) !important;
     box-shadow: 0 0 0 2px rgba(177, 75, 255, 0.25) !important;
   }
 
@@ -52,24 +108,24 @@
 
 /* Glass Surfaces */
 .glass-panel {
-  background: rgba(28, 23, 69, 0.75);
+  background: var(--app-card-bg);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(177, 75, 255, 0.18);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--app-border);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
 }
 
 .glass-card {
-  background: rgba(22, 19, 56, 0.85);
+  background: var(--app-surface-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(177, 75, 255, 0.14);
+  border: 1px solid var(--app-border);
 }
 
 .glass-pill {
-  background: rgba(28, 23, 69, 0.6);
+  background: var(--app-inset-bg);
   backdrop-filter: blur(8px);
-  border: 1px solid rgba(177, 75, 255, 0.2);
+  border: 1px solid var(--app-border);
 }
 
 /* Mission Control Scrollbars */
@@ -79,7 +135,7 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #12102B;
+  background: var(--app-bg);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -99,4 +155,26 @@
 
 .animate-pulseGlow {
   animation: pulseGlow 4s ease-in-out infinite;
+}
+
+/* In white theme mode, ensure high contrast and clear readability */
+.theme-white h1,
+.theme-white h2,
+.theme-white h3,
+.theme-white h4,
+.theme-white .text-white:not([class*="bg-plasma"]):not([class*="bg-rose"]):not([class*="bg-gradient"]):not(.preserve-white) {
+  color: #0F172A;
+}
+
+.theme-white .text-slate-200,
+.theme-white .text-slate-300 {
+  color: #334155;
+}
+
+.theme-white .text-slate-400 {
+  color: #64748B;
+}
+
+.theme-white .text-ice {
+  color: #0F172A;
 }

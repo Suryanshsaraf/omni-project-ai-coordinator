@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useProject } from '../../context/ProjectContext';
-import { Key, Sliders, Eye, EyeOff, Save, CheckCircle2, RotateCcw, BookOpen } from 'lucide-react';
+import { Key, Sliders, Eye, EyeOff, Save, CheckCircle2, RotateCcw, BookOpen, Palette, Sun, Moon } from 'lucide-react';
+import { ThemeToggle } from '../global/ThemeToggle';
 
 export const TabSettings: React.FC = () => {
-  const { settings, updateSettings, resetToInitial, addAgentLog } = useProject();
+  const { settings, updateSettings, resetToInitial, addAgentLog, theme, setTheme } = useProject();
   const [form, setForm] = useState({ ...settings });
   const [showGemini, setShowGemini] = useState(false);
   const [showClickUp, setShowClickUp] = useState(false);
@@ -69,27 +70,79 @@ Your writing must be:
     <div className="space-y-6 max-w-5xl mx-auto">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="font-display font-bold text-lg text-white flex items-center gap-2">
+          <h2 className="font-display font-bold text-lg flex items-center gap-2">
             <Sliders className="w-5 h-5 text-plasma" />
-            Mission Control Settings & Prompt Studio
+            Mission Control Settings & Appearance
           </h2>
           <p className="text-xs text-slate-400 mt-1">
-            Configure live cloud API integrations and explore the AI CERTs course prompt architectures.
+            Configure visual themes, live cloud API integrations, and explore prompt architectures.
           </p>
+        </div>
+      </div>
+
+      {/* Visual Theme Card */}
+      <div 
+        className="rounded-2xl p-6 shadow-xl space-y-4 transition-all duration-300"
+        style={{
+          background: 'var(--app-card-bg)',
+          backdropFilter: 'blur(16px)',
+          border: '1px solid var(--app-border)'
+        }}
+      >
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="space-y-1">
+            <h3 className="font-display font-bold text-sm flex items-center gap-2">
+              <Palette className="w-4 h-4 text-plasma" />
+              Theme & Appearance
+            </h3>
+            <p className="text-xs text-slate-400">
+              Active mode: <strong className="font-semibold capitalize">{theme} Theme</strong>. Use the toggle to switch between Pure Black and Clean White mode.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setTheme('black')}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-medium flex items-center gap-2 transition-all ${
+                theme === 'black'
+                  ? 'bg-neutral-900 text-white border border-white/30 shadow-md font-semibold'
+                  : 'text-slate-400 hover:text-white border border-transparent'
+              }`}
+            >
+              <Moon className="w-3.5 h-3.5" />
+              <span>Black (Default)</span>
+            </button>
+
+            <button
+              onClick={() => setTheme('white')}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-medium flex items-center gap-2 transition-all ${
+                theme === 'white'
+                  ? 'bg-white text-slate-900 border border-slate-300 shadow-md font-semibold'
+                  : 'text-slate-400 hover:text-slate-900 border border-transparent'
+              }`}
+            >
+              <Sun className="w-3.5 h-3.5 text-amber-500" />
+              <span>White</span>
+            </button>
+
+            <div className="pl-2 border-l border-neutral-700/30">
+              <ThemeToggle />
+            </div>
+          </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         {/* Left: API Keys Form */}
         <div 
-          className="rounded-2xl p-6 shadow-xl space-y-5"
+          className="rounded-2xl p-6 shadow-xl space-y-5 transition-all duration-300"
           style={{
-            background: 'rgba(28, 23, 69, 0.85)',
+            background: 'var(--app-card-bg)',
             backdropFilter: 'blur(16px)',
-            border: '1px solid rgba(177, 75, 255, 0.22)'
+            border: '1px solid var(--app-border)'
           }}
         >
-          <h3 className="font-display font-bold text-sm text-white flex items-center gap-2">
+          <h3 className="font-display font-bold text-sm flex items-center gap-2">
             <Key className="w-4 h-4 text-plasma" />
             API & Platform Keys (Stored in LocalStorage)
           </h3>
@@ -106,92 +159,114 @@ Your writing must be:
                   value={form.geminiApiKey}
                   onChange={(e) => setForm({ ...form, geminiApiKey: e.target.value })}
                   placeholder="AIzaSy... (Leave empty for smart offline mode)"
-                  style={{ background: '#12102B', color: '#DDE7FF', border: '1px solid rgba(177, 75, 255, 0.25)' }}
+                  style={{ background: 'var(--input-bg)', color: 'var(--input-text)', border: '1px solid var(--input-border)' }}
                   className="w-full rounded-xl p-3 font-mono pr-10 text-xs"
                 />
                 <button
                   type="button"
                   onClick={() => setShowGemini(!showGemini)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-plasma"
                 >
                   {showGemini ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
             </div>
 
-            {/* ClickUp */}
+            {/* OpenAI */}
             <div>
               <label className="block text-slate-300 font-medium mb-1.5">
-                ClickUp Personal API Token:
-              </label>
-              <div className="relative">
-                <input
-                  type={showClickUp ? 'text' : 'password'}
-                  value={form.clickupToken}
-                  onChange={(e) => setForm({ ...form, clickupToken: e.target.value })}
-                  placeholder="pk_... (Optional for live sync)"
-                  style={{ background: '#12102B', color: '#DDE7FF', border: '1px solid rgba(177, 75, 255, 0.25)' }}
-                  className="w-full rounded-xl p-3 font-mono pr-10 text-xs"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowClickUp(!showClickUp)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
-                >
-                  {showClickUp ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
-              </div>
-            </div>
-
-            {/* ClickUp List ID */}
-            <div>
-              <label className="block text-slate-300 font-medium mb-1.5">
-                ClickUp Target List ID:
+                OpenAI API Key:
               </label>
               <input
-                type="text"
-                value={form.clickupListId}
-                onChange={(e) => setForm({ ...form, clickupListId: e.target.value })}
-                placeholder="9012345678"
-                style={{ background: '#12102B', color: '#DDE7FF', border: '1px solid rgba(177, 75, 255, 0.25)' }}
+                type="password"
+                value={form.openaiApiKey}
+                onChange={(e) => setForm({ ...form, openaiApiKey: e.target.value })}
+                placeholder="sk-proj-... (Optional fallback)"
+                style={{ background: 'var(--input-bg)', color: 'var(--input-text)', border: '1px solid var(--input-border)' }}
                 className="w-full rounded-xl p-3 font-mono text-xs"
               />
             </div>
 
-            {/* Trello API Key */}
-            <div>
-              <label className="block text-slate-300 font-medium mb-1.5">
-                Trello API Key & Token:
-              </label>
-              <div className="grid grid-cols-2 gap-2">
+            {/* ClickUp Token & List */}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-slate-300 font-medium mb-1.5">
+                  ClickUp Token:
+                </label>
+                <div className="relative">
+                  <input
+                    type={showClickUp ? 'text' : 'password'}
+                    value={form.clickupToken}
+                    onChange={(e) => setForm({ ...form, clickupToken: e.target.value })}
+                    placeholder="pk_..."
+                    style={{ background: 'var(--input-bg)', color: 'var(--input-text)', border: '1px solid var(--input-border)' }}
+                    className="w-full rounded-xl p-3 font-mono text-xs pr-9"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowClickUp(!showClickUp)}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-plasma"
+                  >
+                    {showClickUp ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-slate-300 font-medium mb-1.5">
+                  ClickUp List ID:
+                </label>
                 <input
                   type="text"
-                  value={form.trelloKey}
-                  onChange={(e) => setForm({ ...form, trelloKey: e.target.value })}
-                  placeholder="Trello Key"
-                  style={{ background: '#12102B', color: '#DDE7FF', border: '1px solid rgba(177, 75, 255, 0.25)' }}
-                  className="w-full rounded-xl p-3 font-mono text-xs"
-                />
-                <input
-                  type={showTrello ? 'text' : 'password'}
-                  value={form.trelloToken}
-                  onChange={(e) => setForm({ ...form, trelloToken: e.target.value })}
-                  placeholder="Trello Token"
-                  style={{ background: '#12102B', color: '#DDE7FF', border: '1px solid rgba(177, 75, 255, 0.25)' }}
+                  value={form.clickupListId}
+                  onChange={(e) => setForm({ ...form, clickupListId: e.target.value })}
+                  placeholder="901..."
+                  style={{ background: 'var(--input-bg)', color: 'var(--input-text)', border: '1px solid var(--input-border)' }}
                   className="w-full rounded-xl p-3 font-mono text-xs"
                 />
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-3">
+            {/* Trello Key & Token */}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-slate-300 font-medium mb-1.5">
+                  Trello API Key:
+                </label>
+                <input
+                  type="text"
+                  value={form.trelloKey}
+                  onChange={(e) => setForm({ ...form, trelloKey: e.target.value })}
+                  placeholder="API Key"
+                  style={{ background: 'var(--input-bg)', color: 'var(--input-text)', border: '1px solid var(--input-border)' }}
+                  className="w-full rounded-xl p-3 font-mono text-xs"
+                />
+              </div>
+
+              <div>
+                <label className="block text-slate-300 font-medium mb-1.5">
+                  Trello Token:
+                </label>
+                <input
+                  type="password"
+                  value={form.trelloToken}
+                  onChange={(e) => setForm({ ...form, trelloToken: e.target.value })}
+                  placeholder="Token"
+                  style={{ background: 'var(--input-bg)', color: 'var(--input-text)', border: '1px solid var(--input-border)' }}
+                  className="w-full rounded-xl p-3 font-mono text-xs"
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between pt-4">
               <button
                 type="button"
                 onClick={resetToInitial}
-                className="px-3.5 py-2 rounded-xl text-xs text-slate-400 hover:text-white flex items-center gap-1.5 transition-colors"
-                style={{ background: 'rgba(22, 19, 56, 0.9)', border: '1px solid rgba(177, 75, 255, 0.2)' }}
+                className="px-3.5 py-2 rounded-xl text-xs text-slate-400 hover:text-plasma flex items-center gap-1.5 transition-colors"
+                style={{ background: 'var(--app-inset-bg)', border: '1px solid var(--app-border)' }}
               >
                 <RotateCcw className="w-3.5 h-3.5" />
-                <span>Reset Factory Data</span>
+                <span>Reset to Defaults</span>
               </button>
 
               <button
@@ -204,9 +279,9 @@ Your writing must be:
             </div>
 
             {savedSuccess && (
-              <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4" />
-                <span>Settings persisted to browser storage!</span>
+              <div className="p-3 rounded-xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 shrink-0" />
+                <span>Configuration credentials successfully preserved!</span>
               </div>
             )}
           </form>
@@ -214,15 +289,15 @@ Your writing must be:
 
         {/* Right: Prompt Studio */}
         <div 
-          className="rounded-2xl p-6 shadow-xl space-y-4"
+          className="rounded-2xl p-6 shadow-xl space-y-4 transition-all duration-300"
           style={{
-            background: 'rgba(28, 23, 69, 0.85)',
+            background: 'var(--app-card-bg)',
             backdropFilter: 'blur(16px)',
-            border: '1px solid rgba(177, 75, 255, 0.22)'
+            border: '1px solid var(--app-border)'
           }}
         >
           <div className="flex items-center justify-between">
-            <h3 className="font-display font-bold text-sm text-white flex items-center gap-2">
+            <h3 className="font-display font-bold text-sm flex items-center gap-2">
               <BookOpen className="w-4 h-4 text-plasma" />
               Prompt Engineering Studio
             </h3>
@@ -236,7 +311,7 @@ Your writing must be:
           {/* Prompt Selector Pills */}
           <div 
             className="flex gap-1.5 p-1 rounded-xl"
-            style={{ background: 'rgba(18, 16, 43, 0.8)', border: '1px solid rgba(177, 75, 255, 0.18)' }}
+            style={{ background: 'var(--app-inset-bg)', border: '1px solid var(--app-border)' }}
           >
             {promptCards.map((p, idx) => (
               <button
@@ -245,7 +320,7 @@ Your writing must be:
                 className={`flex-1 py-1.5 text-[11px] font-medium rounded-lg transition-colors ${
                   activePromptIndex === idx
                     ? 'bg-plasma text-white shadow-md font-semibold'
-                    : 'text-slate-400 hover:text-white'
+                    : 'text-slate-400 hover:text-plasma'
                 }`}
               >
                 Prompt {idx + 1}
@@ -256,10 +331,10 @@ Your writing must be:
           {/* Active Card Content */}
           <div 
             className="rounded-xl p-4 space-y-3"
-            style={{ background: 'rgba(18, 16, 43, 0.9)', border: '1px solid rgba(177, 75, 255, 0.2)' }}
+            style={{ background: 'var(--app-inset-bg)', border: '1px solid var(--app-border)' }}
           >
             <div>
-              <h4 className="font-display font-bold text-sm text-white">
+              <h4 className="font-display font-bold text-sm">
                 {promptCards[activePromptIndex].title}
               </h4>
               <p className="text-xs text-slate-400 mt-0.5">
@@ -268,8 +343,8 @@ Your writing must be:
             </div>
 
             <pre 
-              className="p-3 rounded-lg text-[11px] font-mono text-slate-300 leading-relaxed overflow-x-auto max-h-72 whitespace-pre-wrap"
-              style={{ background: '#0a091a', border: '1px solid rgba(177, 75, 255, 0.15)' }}
+              className="p-3 rounded-lg text-[11px] font-mono leading-relaxed overflow-x-auto max-h-72 whitespace-pre-wrap transition-colors"
+              style={{ background: 'var(--app-surface-bg)', border: '1px solid var(--app-border)' }}
             >
               {promptCards[activePromptIndex].prompt}
             </pre>
@@ -279,7 +354,7 @@ Your writing must be:
                 navigator.clipboard.writeText(promptCards[activePromptIndex].prompt);
                 alert('Copied prompt template to clipboard!');
               }}
-              className="text-plasma hover:text-plasma/80 font-mono text-xs font-semibold"
+              className="text-plasma hover:text-plasma/80 font-mono text-xs font-semibold cursor-pointer"
             >
               📋 Copy Prompt Template
             </button>

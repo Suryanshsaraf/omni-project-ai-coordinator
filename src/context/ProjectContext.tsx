@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { ProjectData, Task, Risk, RAGStatus, AgentLogEntry, TeamNudge, TaskStatus } from '../types';
+import { ProjectData, Task, Risk, RAGStatus, AgentLogEntry, TeamNudge, TaskStatus, ThemeMode } from '../types';
 import { INITIAL_PROJECTS } from '../data/initialProjects';
 import { calculateHealthScore, computeRAG, fireDoneConfetti, playMissionBeep } from '../utils/helpers';
 
@@ -26,6 +26,9 @@ interface ProjectContextType {
   ragStatus: RAGStatus;
   ragOverride: RAGStatus | null;
   cycleRAGOverride: () => void;
+  theme: ThemeMode;
+  setTheme: (theme: ThemeMode) => void;
+  toggleTheme: () => void;
   healthScore: number;
   agentLogs: AgentLogEntry[];
   nudges: TeamNudge[];
@@ -42,6 +45,13 @@ const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
 export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [activeTab, setActiveTabState] = useState<TabId>('scoping');
   const [activeScenario, setActiveScenarioState] = useState<string>('telemedicine_app');
+  const [theme, setTheme] = useState<ThemeMode>(() => {
+    try {
+      const saved = localStorage.getItem('omni_theme');
+      if (saved === 'white') return 'white';
+    } catch (e) {}
+    return 'black';
+  });
   
   // Projects map initialized from LocalStorage or Defaults
   const [projects, setProjects] = useState<Record<string, ProjectData>>(() => {
@@ -124,6 +134,30 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [ragOverride, naturalRAG]);
+
+  // Sync theme attribute & class with document element
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === 'white') {
+      root.classList.add('theme-white');
+      root.classList.remove('theme-black', 'dark');
+      root.setAttribute('data-theme', 'white');
+    } else {
+      root.classList.add('theme-black', 'dark');
+      root.classList.remove('theme-white');
+      root.setAttribute('data-theme', 'black');
+    }
+    try {
+      localStorage.setItem('omni_theme', theme);
+    } catch (e) {}
+  }, [theme]);
+
+  const toggleTheme = () => {
+    const nextTheme: ThemeMode = theme === 'black' ? 'white' : 'black';
+    setTheme(nextTheme);
+    if (settings.soundEnabled) playMissionBeep('switch');
+    addAgentLog('THEME_TOGGLE', `Visual theme shifted to ${nextTheme.toUpperCase()} mode`, 'info');
+  };
 
   const cycleRAGOverride = () => {
     const cycle: (RAGStatus | null)[] = [null, 'green', 'amber', 'red'];
@@ -239,6 +273,9 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
         ragStatus,
         ragOverride,
         cycleRAGOverride,
+        theme,
+        setTheme,
+        toggleTheme,
         healthScore,
         agentLogs,
         nudges,

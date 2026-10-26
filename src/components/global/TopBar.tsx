@@ -1,14 +1,15 @@
 import React from 'react';
 import { useProject } from '../../context/ProjectContext';
 import { Volume2, VolumeX, Orbit } from 'lucide-react';
+import { ThemeToggle } from './ThemeToggle';
 
 export const TopBar: React.FC = () => {
   const { activeScenario, setActiveScenario, ragStatus, cycleRAGOverride, settings, updateSettings } = useProject();
 
   const ragPillStyles = {
-    green: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40 shadow-[0_0_15px_rgba(46,230,166,0.25)]',
-    amber: 'bg-amber-500/15 text-amber-300 border-amber-500/40 shadow-[0_0_15px_rgba(255,178,36,0.25)]',
-    red: 'bg-rose-500/15 text-rose-300 border-rose-500/40 shadow-[0_0_15px_rgba(255,59,92,0.3)]'
+    green: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/40 shadow-[0_0_15px_rgba(46,230,166,0.25)]',
+    amber: 'bg-amber-500/15 text-amber-400 border-amber-500/40 shadow-[0_0_15px_rgba(255,178,36,0.25)]',
+    red: 'bg-rose-500/15 text-rose-400 border-rose-500/40 shadow-[0_0_15px_rgba(255,59,92,0.3)]'
   }[ragStatus];
 
   const ragText = {
@@ -19,11 +20,12 @@ export const TopBar: React.FC = () => {
 
   return (
     <header 
-      className="relative z-30 w-full px-4 sm:px-8 py-3 flex flex-wrap items-center justify-between gap-4 border-b border-night-border"
+      className="relative z-30 w-full px-4 sm:px-8 py-3 flex flex-wrap items-center justify-between gap-4 border-b transition-colors duration-300"
       style={{
-        background: 'rgba(18, 16, 43, 0.85)',
+        background: 'var(--topbar-bg)',
         backdropFilter: 'blur(16px)',
-        borderBottom: '1px solid rgba(177, 75, 255, 0.16)'
+        WebkitBackdropFilter: 'blur(16px)',
+        borderColor: 'var(--topbar-border)'
       }}
     >
       {/* Brand & Mission Title */}
@@ -33,7 +35,7 @@ export const TopBar: React.FC = () => {
         </div>
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="font-display font-bold text-base sm:text-lg text-white tracking-tight">
+            <h1 className="font-display font-bold text-base sm:text-lg tracking-tight">
               OmniProject
             </h1>
             <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-plasma/20 text-plasma border border-plasma/30 font-semibold">
@@ -48,10 +50,10 @@ export const TopBar: React.FC = () => {
 
       {/* Scenario Switcher Pills */}
       <div 
-        className="flex items-center gap-1.5 p-1 rounded-full border"
+        className="flex items-center gap-1.5 p-1 rounded-full border transition-colors duration-300"
         style={{
-          background: 'rgba(22, 19, 56, 0.85)',
-          borderColor: 'rgba(177, 75, 255, 0.2)'
+          background: 'var(--app-inset-bg)',
+          borderColor: 'var(--app-border)'
         }}
       >
         <button
@@ -59,7 +61,7 @@ export const TopBar: React.FC = () => {
           className={`px-3 py-1 text-xs rounded-full font-medium transition-all duration-300 flex items-center gap-1.5 ${
             activeScenario === 'telemedicine_app'
               ? 'bg-plasma text-white shadow-md shadow-plasma/40 font-semibold'
-              : 'text-slate-400 hover:text-white'
+              : 'text-slate-400 hover:text-plasma'
           }`}
         >
           <span>🩺</span>
@@ -71,7 +73,7 @@ export const TopBar: React.FC = () => {
           className={`px-3 py-1 text-xs rounded-full font-medium transition-all duration-300 flex items-center gap-1.5 ${
             activeScenario === 'fintech_kyc'
               ? 'bg-plasma text-white shadow-md shadow-plasma/40 font-semibold'
-              : 'text-slate-400 hover:text-white'
+              : 'text-slate-400 hover:text-plasma'
           }`}
         >
           <span>💳</span>
@@ -79,8 +81,11 @@ export const TopBar: React.FC = () => {
         </button>
       </div>
 
-      {/* Controls & RAG Heartbeat Pill */}
+      {/* Controls: Theme White Toggle + RAG Heartbeat Pill + Audio */}
       <div className="flex items-center gap-2.5">
+        {/* White / Black Theme Toggle */}
+        <ThemeToggle />
+
         {/* Interactive RAG Heartbeat Pill + Key R indicator */}
         <button
           onClick={cycleRAGOverride}
@@ -92,7 +97,7 @@ export const TopBar: React.FC = () => {
             <span className="relative inline-flex rounded-full h-2 w-2 bg-current" />
           </span>
           <span className="font-sans font-semibold tracking-wide">RAG: {ragText}</span>
-          <span className="text-[10px] font-mono opacity-70 bg-black/40 px-1.5 py-0.2 rounded border border-white/10">
+          <span className="text-[10px] font-mono opacity-70 bg-black/40 px-1.5 py-0.2 rounded border border-white/10 text-white">
             [R]
           </span>
         </button>
@@ -103,8 +108,8 @@ export const TopBar: React.FC = () => {
           title={settings.soundEnabled ? 'Mute Mission Audio' : 'Enable Mission Audio'}
           className="w-8 h-8 rounded-lg border flex items-center justify-center text-slate-400 hover:text-white transition-colors"
           style={{
-            background: 'rgba(22, 19, 56, 0.8)',
-            borderColor: 'rgba(177, 75, 255, 0.2)'
+            background: 'var(--app-surface-bg)',
+            borderColor: 'var(--app-border)'
           }}
         >
           {settings.soundEnabled ? (

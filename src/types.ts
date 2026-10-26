@@ -1,4 +1,5 @@
 export type RAGStatus = 'green' | 'amber' | 'red';
+export type ThemeMode = 'black' | 'white';
 
 export type TaskStatus = 'To Do' | 'In Progress' | 'Blocked' | 'Done';
 export type PriorityLevel = 'Urgent' | 'High' | 'Medium' | 'Low';

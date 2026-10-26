@@ -37,13 +37,13 @@ export const DockNav: React.FC = () => {
     >
       <nav 
         aria-label="Mission Navigation Dock"
-        className="flex items-center gap-1 sm:gap-2 px-3 py-2 rounded-2xl glass-panel shadow-2xl"
+        className="flex items-center gap-1 sm:gap-2 px-3 py-2 rounded-2xl shadow-2xl transition-all duration-300"
         style={{
-          background: 'rgba(28, 23, 69, 0.92)',
+          background: 'var(--dock-bg)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
-          border: '1px solid rgba(177, 75, 255, 0.28)',
-          boxShadow: '0 20px 50px rgba(0, 0, 0, 0.8), 0 0 20px rgba(177, 75, 255, 0.15)'
+          border: '1px solid var(--dock-border)',
+          boxShadow: '0 20px 50px rgba(0, 0, 0, 0.35)'
         }}
       >
         {items.map((item) => {
@@ -56,8 +56,8 @@ export const DockNav: React.FC = () => {
               onClick={() => setActiveTab(item.id)}
               className={`relative flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-medium transition-all duration-300 ${
                 isActive
-                  ? 'bg-plasma text-white shadow-lg shadow-plasma/50 font-semibold'
-                  : 'text-slate-400 hover:text-white hover:bg-white/5'
+                  ? 'bg-plasma text-white shadow-lg shadow-plasma/40 font-semibold'
+                  : 'text-slate-400 hover:text-plasma hover:bg-neutral-500/10'
               }`}
             >
               <Icon className="w-4 h-4 shrink-0" />
@@ -68,7 +68,7 @@ export const DockNav: React.FC = () => {
               {/* Notification Badge */}
               {item.badge !== undefined && (
                 <span className={`w-4 h-4 rounded-full text-[10px] font-mono font-bold flex items-center justify-center shrink-0 ${
-                  isActive ? 'bg-white text-night-base' : 'bg-signal-red text-white'
+                  isActive ? 'bg-white text-slate-900' : 'bg-signal-red text-white'
                 }`}>
                   {item.badge}
                 </span>

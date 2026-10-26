@@ -145,15 +145,15 @@ Return ONLY valid JSON (no markdown fences, no conversational text) matching thi
     <div className="space-y-6 max-w-5xl mx-auto">
       {/* Spotlight Card: Requirement Brief Input */}
       <div 
-        className="rounded-2xl p-6 shadow-xl backdrop-blur-md overflow-hidden relative"
+        className="rounded-2xl p-6 shadow-xl backdrop-blur-md overflow-hidden relative transition-all duration-300"
         style={{
-          background: 'rgba(28, 23, 69, 0.85)',
-          border: '1px solid rgba(177, 75, 255, 0.22)'
+          background: 'var(--app-card-bg)',
+          border: '1px solid var(--app-border)'
         }}
       >
         <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
           <div>
-            <h2 className="font-display font-bold text-lg text-white flex items-center gap-2">
+            <h2 className="font-display font-bold text-lg flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-plasma" />
               Scoping & Work Breakdown Structure (WBS)
             </h2>
@@ -165,16 +165,16 @@ Return ONLY valid JSON (no markdown fences, no conversational text) matching thi
           <div className="flex items-center gap-2">
             <button
               onClick={handleSyncClickUp}
-              className="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-200 hover:text-white transition-all flex items-center gap-1.5"
-              style={{ background: 'rgba(22, 19, 56, 0.9)', border: '1px solid rgba(177, 75, 255, 0.2)' }}
+              className="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-plasma transition-all flex items-center gap-1.5"
+              style={{ background: 'var(--app-surface-bg)', border: '1px solid var(--app-border)' }}
             >
               <UploadCloud className="w-3.5 h-3.5 text-plasma" />
               <span>Sync ClickUp</span>
             </button>
             <button
               onClick={handleSyncTrello}
-              className="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-200 hover:text-white transition-all flex items-center gap-1.5"
-              style={{ background: 'rgba(22, 19, 56, 0.9)', border: '1px solid rgba(177, 75, 255, 0.2)' }}
+              className="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-plasma transition-all flex items-center gap-1.5"
+              style={{ background: 'var(--app-surface-bg)', border: '1px solid var(--app-border)' }}
             >
               <UploadCloud className="w-3.5 h-3.5 text-emerald-400" />
               <span>Sync Trello</span>
@@ -201,20 +201,20 @@ Return ONLY valid JSON (no markdown fences, no conversational text) matching thi
           rows={3}
           value={brief}
           onChange={(e) => setBrief(e.target.value)}
-          style={{ background: '#12102B', color: '#DDE7FF', border: '1px solid rgba(177, 75, 255, 0.25)' }}
+          style={{ background: 'var(--input-bg)', color: 'var(--input-text)', border: '1px solid var(--input-border)' }}
           className="w-full rounded-xl p-4 text-xs sm:text-sm font-mono leading-relaxed resize-none"
           placeholder="e.g. Build an online sneaker marketplace with live bidding, Stripe payments, and authenticated seller verification..."
         />
 
         {/* Controls Bar */}
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-purple-500/20">
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-neutral-700/20">
           <div className="flex flex-wrap items-center gap-4 text-xs">
             <div className="flex items-center gap-2">
               <span className="text-slate-400">Methodology:</span>
               <select
                 value={methodology}
                 onChange={(e) => setMethodology(e.target.value)}
-                style={{ background: '#12102B', color: '#DDE7FF', border: '1px solid rgba(177, 75, 255, 0.25)' }}
+                style={{ background: 'var(--input-bg)', color: 'var(--input-text)', border: '1px solid var(--input-border)' }}
                 className="rounded-lg px-2.5 py-1 text-xs"
               >
                 <option value="Agile / Scrum">Agile / Scrum</option>
@@ -227,14 +227,14 @@ Return ONLY valid JSON (no markdown fences, no conversational text) matching thi
               <span className="text-slate-400">Sprint Cadence:</span>
               <div 
                 className="flex items-center gap-1 rounded-lg p-0.5"
-                style={{ background: 'rgba(18, 16, 43, 0.9)', border: '1px solid rgba(177, 75, 255, 0.2)' }}
+                style={{ background: 'var(--app-inset-bg)', border: '1px solid var(--app-border)' }}
               >
                 {[1, 2, 3, 4].map((w) => (
                   <button
                     key={w}
                     onClick={() => setSprintWeeks(w)}
                     className={`px-2.5 py-0.5 rounded text-xs font-mono font-medium transition-colors ${
-                      sprintWeeks === w ? 'bg-plasma text-white' : 'text-slate-400 hover:text-white'
+                      sprintWeeks === w ? 'bg-plasma text-white' : 'text-slate-400 hover:text-plasma'
                     }`}
                   >
                     {w}w
@@ -286,21 +286,21 @@ Return ONLY valid JSON (no markdown fences, no conversational text) matching thi
               key={epic.id}
               className="rounded-xl overflow-hidden backdrop-blur-sm transition-all"
               style={{
-                background: 'rgba(28, 23, 69, 0.75)',
-                border: '1px solid rgba(177, 75, 255, 0.2)'
+                background: 'var(--app-card-bg)',
+                border: '1px solid var(--app-border)'
               }}
             >
               {/* Epic Header */}
               <button
                 onClick={() => toggleEpic(epic.id)}
-                className="w-full px-5 py-3.5 flex items-center justify-between text-left hover:bg-white/[0.03] transition-colors"
+                className="w-full px-5 py-3.5 flex items-center justify-between text-left hover:bg-neutral-500/5 transition-colors"
               >
                 <div className="flex items-center gap-3">
                   <span className="font-mono text-xs font-bold text-plasma bg-plasma/15 px-2 py-0.5 rounded border border-plasma/30">
                     {epic.id}
                   </span>
                   <div>
-                    <h4 className="font-sans font-semibold text-sm text-white">{epic.title}</h4>
+                    <h4 className="font-sans font-semibold text-sm">{epic.title}</h4>
                     {epic.description && (
                       <p className="text-xs text-slate-400 mt-0.5">{epic.description}</p>
                     )}
@@ -319,9 +319,9 @@ Return ONLY valid JSON (no markdown fences, no conversational text) matching thi
 
               {/* Tasks under Epic */}
               {isExpanded && (
-                <div className="divide-y divide-purple-500/10 border-t border-purple-500/20" style={{ background: 'rgba(18, 16, 43, 0.6)' }}>
+                <div className="divide-y divide-neutral-700/10 border-t border-neutral-700/20" style={{ background: 'var(--app-inset-bg)' }}>
                   {epicTasks.map((task) => (
-                    <div key={task.id} className="p-4 sm:p-5 hover:bg-white/[0.015] transition-colors">
+                    <div key={task.id} className="p-4 sm:p-5 hover:bg-neutral-500/5 transition-colors">
                       <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
                         <div className="flex items-center gap-2">
                           <span className="font-mono text-xs text-slate-400 font-bold">{task.id}</span>
@@ -330,20 +330,20 @@ Return ONLY valid JSON (no markdown fences, no conversational text) matching thi
                         <div className="flex items-center gap-2 text-xs">
                           <span 
                             className="px-2 py-0.5 rounded font-mono text-slate-300"
-                            style={{ background: 'rgba(22, 19, 56, 0.9)', border: '1px solid rgba(177, 75, 255, 0.2)' }}
+                            style={{ background: 'var(--app-surface-bg)', border: '1px solid var(--app-border)' }}
                           >
                             🎯 {task.story_points} Pts
                           </span>
                           <span 
                             className="px-2 py-0.5 rounded font-mono text-slate-300"
-                            style={{ background: 'rgba(22, 19, 56, 0.9)', border: '1px solid rgba(177, 75, 255, 0.2)' }}
+                            style={{ background: 'var(--app-surface-bg)', border: '1px solid var(--app-border)' }}
                           >
                             ⏱️ {task.estimated_hours}h
                           </span>
                           <span className={`px-2 py-0.5 rounded font-mono font-medium ${
                             task.priority === 'Urgent'
-                              ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
-                              : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                              ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                              : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
                           }`}>
                             {task.priority}
                           </span>
@@ -358,7 +358,7 @@ Return ONLY valid JSON (no markdown fences, no conversational text) matching thi
                       {/* Gherkin Criteria Box */}
                       <div 
                         className="rounded-lg p-3 text-xs font-mono"
-                        style={{ background: '#0d0c20', border: '1px solid rgba(177, 75, 255, 0.18)' }}
+                        style={{ background: 'var(--app-surface-bg)', border: '1px solid var(--app-border)' }}
                       >
                         <div className="flex items-center gap-1.5 text-plasma text-[11px] font-bold uppercase tracking-wider mb-1">
                           <FileCode className="w-3.5 h-3.5" />

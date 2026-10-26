@@ -79,16 +79,16 @@ export const TabKanban: React.FC = () => {
       {/* Top Meta Bar */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="font-display font-bold text-lg text-white">Sprint Kanban Mission Grid</h2>
+          <h2 className="font-display font-bold text-lg">Sprint Kanban Mission Grid</h2>
           <p className="text-xs text-slate-400 mt-1">
             Drag cards between lanes or use quick-shift buttons. Dropping into <strong>Done</strong> fires celebrations!
           </p>
         </div>
         <div 
           className="flex items-center gap-2 text-xs font-mono text-slate-300 px-3 py-1.5 rounded-lg"
-          style={{ background: 'rgba(22, 19, 56, 0.9)', border: '1px solid rgba(177, 75, 255, 0.22)' }}
+          style={{ background: 'var(--app-surface-bg)', border: '1px solid var(--app-border)' }}
         >
-          <span>Total Story Points: <strong className="text-white tabular-nums">{project.tasks.reduce((sum, t) => sum + t.story_points, 0)}</strong></span>
+          <span>Total Story Points: <strong className="tabular-nums font-semibold">{project.tasks.reduce((sum, t) => sum + t.story_points, 0)}</strong></span>
         </div>
       </div>
 
@@ -108,8 +108,8 @@ export const TabKanban: React.FC = () => {
                 isOver ? 'ring-2 ring-plasma scale-[1.01]' : ''
               }`}
               style={{
-                background: isOver ? 'rgba(38, 30, 92, 0.95)' : 'rgba(28, 23, 69, 0.85)',
-                border: isOver ? '1px solid #B14BFF' : '1px solid rgba(177, 75, 255, 0.22)',
+                background: isOver ? 'rgba(139, 92, 246, 0.2)' : 'var(--app-card-bg)',
+                border: isOver ? '1px solid var(--plasma)' : '1px solid var(--app-border)',
                 boxShadow: isOver
                   ? '0 16px 40px rgba(177, 75, 255, 0.35)'
                   : `0 12px 35px ${col.glow}`
@@ -123,7 +123,7 @@ export const TabKanban: React.FC = () => {
                   </span>
                   <span 
                     className="w-5 h-5 rounded-full text-[11px] font-mono text-slate-300 flex items-center justify-center font-bold"
-                    style={{ background: '#12102B', border: '1px solid rgba(177, 75, 255, 0.25)' }}
+                    style={{ background: 'var(--app-inset-bg)', border: '1px solid var(--app-border)' }}
                   >
                     {tasksInCol.length}
                   </span>
@@ -140,8 +140,8 @@ export const TabKanban: React.FC = () => {
               <div className="flex-1 space-y-3">
                 {tasksInCol.length === 0 ? (
                   <div 
-                    className="h-28 rounded-xl border border-dashed border-purple-500/20 flex items-center justify-center text-xs text-slate-500 font-mono select-none"
-                    style={{ background: 'rgba(18, 16, 43, 0.3)' }}
+                    className="h-28 rounded-xl border border-dashed border-neutral-700/30 flex items-center justify-center text-xs text-slate-500 font-mono select-none"
+                    style={{ background: 'var(--app-inset-bg)' }}
                   >
                     <span>Drop cards here</span>
                   </div>
@@ -164,9 +164,9 @@ export const TabKanban: React.FC = () => {
                           task.status === 'Blocked' ? 'border-l-4 border-l-rose-500' : ''
                         }`}
                         style={{
-                          background: 'rgba(22, 19, 56, 0.95)',
-                          border: isDraggingThis ? '1px dashed #B14BFF' : '1px solid rgba(177, 75, 255, 0.22)',
-                          borderLeft: task.status === 'Blocked' ? '4px solid #FF3B5C' : '1px solid rgba(177, 75, 255, 0.22)'
+                          background: 'var(--app-surface-bg)',
+                          border: isDraggingThis ? '1px dashed var(--plasma)' : '1px solid var(--app-border)',
+                          borderLeft: task.status === 'Blocked' ? '4px solid #FF3B5C' : '1px solid var(--app-border)'
                         }}
                       >
                         {/* Task Header */}
@@ -181,14 +181,14 @@ export const TabKanban: React.FC = () => {
                           <div className="flex items-center gap-1.5">
                             <span 
                               className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded text-plasma"
-                              style={{ background: '#12102B', border: '1px solid rgba(177, 75, 255, 0.3)' }}
+                              style={{ background: 'var(--app-inset-bg)', border: '1px solid var(--app-border)' }}
                             >
                               {task.story_points} Pts
                             </span>
                             <span className={`text-[10px] font-mono font-semibold px-1.5 py-0.5 rounded ${
                               task.priority === 'Urgent'
-                                ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
-                                : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                                ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                                : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
                             }`}>
                               {task.priority}
                             </span>
@@ -196,20 +196,20 @@ export const TabKanban: React.FC = () => {
                         </div>
 
                         {/* Title */}
-                        <h4 className="font-sans font-medium text-xs sm:text-sm text-ice leading-snug mb-2 group-hover:text-white transition-colors">
+                        <h4 className="font-sans font-medium text-xs sm:text-sm text-ice leading-snug mb-2 group-hover:text-plasma transition-colors">
                           {task.title}
                         </h4>
 
                         {/* Blocker Callout if blocked */}
                         {task.status === 'Blocked' && (
-                          <div className="mb-2.5 p-2 rounded-lg bg-rose-500/15 border border-rose-500/30 text-[11px] text-rose-300 flex items-start gap-1.5">
+                          <div className="mb-2.5 p-2 rounded-lg bg-rose-500/15 border border-rose-500/30 text-[11px] text-rose-400 flex items-start gap-1.5">
                             <AlertOctagon className="w-3.5 h-3.5 shrink-0 mt-0.5" />
                             <span>{task.blocker_reason || 'Blocker pending escalation'}</span>
                           </div>
                         )}
 
                         {/* Assignee & Hours */}
-                        <div className="flex items-center justify-between text-[11px] text-slate-400 pt-2 border-t border-purple-500/15">
+                        <div className="flex items-center justify-between text-[11px] text-slate-400 pt-2 border-t border-neutral-700/15">
                           <span className="flex items-center gap-1">
                             <User className="w-3 h-3 text-slate-500" />
                             <span className="truncate max-w-[100px] text-slate-300">{task.assignee}</span>
@@ -221,7 +221,7 @@ export const TabKanban: React.FC = () => {
                         </div>
 
                         {/* Quick Status Shift Bar */}
-                        <div className="mt-3 pt-2 border-t border-purple-500/10 flex items-center justify-between">
+                        <div className="mt-3 pt-2 border-t border-neutral-700/10 flex items-center justify-between">
                           <span className="text-[10px] text-slate-500 font-mono">Shift:</span>
                           <div className="flex items-center gap-1">
                             {columns.filter(c => c.id !== task.status).map(target => (
@@ -229,8 +229,8 @@ export const TabKanban: React.FC = () => {
                                 key={target.id}
                                 onClick={() => handleQuickMove(task.id, target.id)}
                                 title={`Move to ${target.label}`}
-                                className="px-1.5 py-0.5 rounded text-[10px] font-mono hover:text-white transition-colors"
-                                style={{ background: '#12102B', border: '1px solid rgba(177, 75, 255, 0.2)' }}
+                                className="px-1.5 py-0.5 rounded text-[10px] font-mono hover:text-plasma transition-colors"
+                                style={{ background: 'var(--app-inset-bg)', border: '1px solid var(--app-border)' }}
                               >
                                 {target.id === 'In Progress' ? 'Prog' : target.label}
                               </button>
@@ -252,7 +252,7 @@ export const TabKanban: React.FC = () => {
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
           <div 
             className="max-w-md w-full rounded-2xl p-6 shadow-2xl space-y-4"
-            style={{ background: '#1C1745', border: '1px solid rgba(255, 59, 92, 0.4)' }}
+            style={{ background: 'var(--app-card-bg)', border: '1px solid rgba(255, 59, 92, 0.4)' }}
           >
             <div className="flex items-center gap-2 text-rose-400 font-display font-bold text-sm">
               <AlertOctagon className="w-5 h-5" />
@@ -265,7 +265,7 @@ export const TabKanban: React.FC = () => {
               rows={3}
               value={blockerNote}
               onChange={(e) => setBlockerNote(e.target.value)}
-              style={{ background: '#12102B', color: '#DDE7FF', border: '1px solid rgba(255, 59, 92, 0.4)' }}
+              style={{ background: 'var(--input-bg)', color: 'var(--input-text)', border: '1px solid rgba(255, 59, 92, 0.4)' }}
               className="w-full rounded-xl p-3 text-xs font-mono resize-none"
               placeholder="e.g. Waiting on STUN/TURN firewall approval from DevOps infrastructure team..."
             />

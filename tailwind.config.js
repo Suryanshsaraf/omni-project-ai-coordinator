@@ -9,14 +9,14 @@ export default {
     extend: {
       colors: {
         night: {
-          base: '#12102B',
-          card: '#161338',
-          surface: '#1C1745',
-          panel: '#221D54',
-          border: 'rgba(177, 75, 255, 0.16)',
-          hover: 'rgba(177, 75, 255, 0.1)'
+          base: 'var(--night-base)',
+          card: 'var(--night-card)',
+          surface: 'var(--night-surface)',
+          panel: 'var(--night-panel)',
+          border: 'var(--night-border)',
+          hover: 'var(--night-hover)'
         },
-        ice: '#DDE7FF',
+        ice: 'var(--ice)',
         plasma: {
           DEFAULT: '#B14BFF',
           glow: 'rgba(177, 75, 255, 0.45)'

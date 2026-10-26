@@ -47,12 +47,12 @@ export const TabRisk: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Column: 5x5 Interactive Risk Matrix (7 cols) */}
         <div 
-          className="lg:col-span-7 rounded-2xl p-6 shadow-xl backdrop-blur-md relative overflow-hidden"
-          style={{ background: 'rgba(28, 23, 69, 0.85)', border: '1px solid rgba(177, 75, 255, 0.22)' }}
+          className="lg:col-span-7 rounded-2xl p-6 shadow-xl backdrop-blur-md relative overflow-hidden transition-all duration-300"
+          style={{ background: 'var(--app-card-bg)', border: '1px solid var(--app-border)' }}
         >
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="font-display font-bold text-base text-white flex items-center gap-2">
+              <h3 className="font-display font-bold text-base flex items-center gap-2">
                 <ShieldCheck className="w-5 h-5 text-plasma" />
                 Dynamic Probability × Impact Matrix
               </h3>
@@ -148,8 +148,8 @@ export const TabRisk: React.FC = () => {
         {/* Right Column: Risk Detail Panel */}
         <div className="lg:col-span-5 space-y-5">
           <div 
-            className="rounded-2xl p-5 shadow-xl backdrop-blur-md"
-            style={{ background: 'rgba(28, 23, 69, 0.85)', border: '1px solid rgba(177, 75, 255, 0.22)' }}
+            className="rounded-2xl p-5 shadow-xl backdrop-blur-md transition-all duration-300"
+            style={{ background: 'var(--app-card-bg)', border: '1px solid var(--app-border)' }}
           >
             {selectedRisk ? (
               <div className="space-y-3.5">
@@ -174,13 +174,13 @@ export const TabRisk: React.FC = () => {
                   <span className="text-xs text-slate-400 font-mono">P:{selectedRisk.probability} × I:{selectedRisk.impact}</span>
                 </div>
 
-                <h4 className="font-sans font-semibold text-sm text-white">
+                <h4 className="font-sans font-semibold text-sm">
                   {selectedRisk.description}
                 </h4>
 
                 <div 
                   className="rounded-xl p-3.5 space-y-2 text-xs"
-                  style={{ background: '#0f0e24', border: '1px solid rgba(177, 75, 255, 0.18)' }}
+                  style={{ background: 'var(--app-surface-bg)', border: '1px solid var(--app-border)' }}
                 >
                   <div className="flex items-center gap-1.5 text-plasma font-bold text-[11px] uppercase tracking-wide">
                     <ShieldCheck className="w-3.5 h-3.5" />
@@ -203,8 +203,8 @@ export const TabRisk: React.FC = () => {
 
           {/* Severity Distribution Pills */}
           <div 
-            className="rounded-2xl p-5 shadow-xl"
-            style={{ background: 'rgba(28, 23, 69, 0.85)', border: '1px solid rgba(177, 75, 255, 0.22)' }}
+            className="rounded-2xl p-5 shadow-xl transition-all duration-300"
+            style={{ background: 'var(--app-card-bg)', border: '1px solid var(--app-border)' }}
           >
             <h4 className="font-display font-bold text-xs uppercase tracking-wider text-slate-300 mb-3">
               Severity Distribution
@@ -260,11 +260,11 @@ export const TabRisk: React.FC = () => {
 
       {/* Wrike Capacity & Workload Balancing Section */}
       <div 
-        className="rounded-2xl p-6 shadow-xl backdrop-blur-md space-y-4"
-        style={{ background: 'rgba(28, 23, 69, 0.85)', border: '1px solid rgba(177, 75, 255, 0.22)' }}
+        className="rounded-2xl p-6 shadow-xl backdrop-blur-md space-y-4 transition-all duration-300"
+        style={{ background: 'var(--app-card-bg)', border: '1px solid var(--app-border)' }}
       >
         <div>
-          <h3 className="font-display font-bold text-base text-white flex items-center gap-2">
+          <h3 className="font-display font-bold text-base flex items-center gap-2">
             <Flame className="w-5 h-5 text-amber-400" />
             Smart Resource Workload Balancing (Wrike Optimization)
           </h3>
@@ -281,13 +281,13 @@ export const TabRisk: React.FC = () => {
             return (
               <div 
                 key={m.name} 
-                className="space-y-1.5 p-3 rounded-xl"
-                style={{ background: 'rgba(22, 19, 56, 0.85)', border: '1px solid rgba(177, 75, 255, 0.18)' }}
+                className="space-y-1.5 p-3 rounded-xl transition-colors"
+                style={{ background: 'var(--app-surface-bg)', border: '1px solid var(--app-border)' }}
               >
                 <div className="flex items-center justify-between text-xs">
                   <div className="flex items-center gap-2">
                     <User className="w-3.5 h-3.5 text-slate-400" />
-                    <span className="font-semibold text-white">{m.name}</span>
+                    <span className="font-semibold">{m.name}</span>
                     <span className="text-[11px] text-slate-400 font-mono">({m.role})</span>
                   </div>
 
@@ -308,7 +308,7 @@ export const TabRisk: React.FC = () => {
                 {/* Overflow Progress Bar */}
                 <div 
                   className="w-full h-3 rounded-full overflow-hidden flex relative"
-                  style={{ background: '#12102B' }}
+                  style={{ background: 'var(--app-inset-bg)' }}
                 >
                   <div
                     className={`h-full transition-all duration-500 ${

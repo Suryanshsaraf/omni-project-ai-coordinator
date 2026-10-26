@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { useProject } from '../../context/ProjectContext';
 
 export const MissionBackground: React.FC = () => {
-  const { ragStatus } = useProject();
+  const { ragStatus, theme } = useProject();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
@@ -22,24 +22,26 @@ export const MissionBackground: React.FC = () => {
     };
     window.addEventListener('resize', handleResize);
 
-    // Color definitions based on RAG state
+    const isWhite = theme === 'white';
+
+    // Color definitions based on RAG state & current theme
     const colorThemes = {
       green: {
-        primary: 'rgba(46, 230, 166, 0.12)',
-        secondary: 'rgba(177, 75, 255, 0.08)',
-        accent: 'rgba(46, 230, 166, 0.04)',
+        primary: isWhite ? 'rgba(16, 185, 129, 0.08)' : 'rgba(46, 230, 166, 0.1)',
+        secondary: isWhite ? 'rgba(139, 92, 246, 0.06)' : 'rgba(177, 75, 255, 0.07)',
+        accent: isWhite ? 'rgba(16, 185, 129, 0.03)' : 'rgba(46, 230, 166, 0.03)',
         speed: 0.003
       },
       amber: {
-        primary: 'rgba(255, 178, 36, 0.14)',
-        secondary: 'rgba(177, 75, 255, 0.09)',
-        accent: 'rgba(255, 178, 36, 0.05)',
+        primary: isWhite ? 'rgba(245, 158, 11, 0.09)' : 'rgba(255, 178, 36, 0.12)',
+        secondary: isWhite ? 'rgba(139, 92, 246, 0.07)' : 'rgba(177, 75, 255, 0.08)',
+        accent: isWhite ? 'rgba(245, 158, 11, 0.04)' : 'rgba(255, 178, 36, 0.04)',
         speed: 0.007
       },
       red: {
-        primary: 'rgba(255, 59, 92, 0.18)',
-        secondary: 'rgba(177, 75, 255, 0.12)',
-        accent: 'rgba(255, 59, 92, 0.08)',
+        primary: isWhite ? 'rgba(239, 68, 68, 0.11)' : 'rgba(255, 59, 92, 0.16)',
+        secondary: isWhite ? 'rgba(139, 92, 246, 0.08)' : 'rgba(177, 75, 255, 0.1)',
+        accent: isWhite ? 'rgba(239, 68, 68, 0.05)' : 'rgba(255, 59, 92, 0.06)',
         speed: 0.015
       }
     };
@@ -54,13 +56,13 @@ export const MissionBackground: React.FC = () => {
     }));
 
     const render = () => {
-      const theme = colorThemes[ragStatus];
-      step += theme.speed;
+      const activeColor = colorThemes[ragStatus];
+      step += activeColor.speed;
 
       ctx.clearRect(0, 0, width, height);
 
-      // Deep space base
-      ctx.fillStyle = '#12102B';
+      // Deep space base - True Black in black mode, Crisp light in white mode
+      ctx.fillStyle = isWhite ? '#F8FAFC' : '#000000';
       ctx.fillRect(0, 0, width, height);
 
       // Aurora Wave 1
@@ -72,8 +74,8 @@ export const MissionBackground: React.FC = () => {
         height * 0.25,
         width * 0.7
       );
-      g1.addColorStop(0, theme.primary);
-      g1.addColorStop(0.6, theme.secondary);
+      g1.addColorStop(0, activeColor.primary);
+      g1.addColorStop(0.6, activeColor.secondary);
       g1.addColorStop(1, 'transparent');
       ctx.fillStyle = g1;
       ctx.fillRect(0, 0, width, height);
@@ -87,14 +89,14 @@ export const MissionBackground: React.FC = () => {
         height * 0.7,
         width * 0.65
       );
-      g2.addColorStop(0, theme.secondary);
-      g2.addColorStop(0.5, theme.accent);
+      g2.addColorStop(0, activeColor.secondary);
+      g2.addColorStop(0.5, activeColor.accent);
       g2.addColorStop(1, 'transparent');
       ctx.fillStyle = g2;
       ctx.fillRect(0, 0, width, height);
 
       // Ambient Star Dust
-      ctx.fillStyle = '#DDE7FF';
+      ctx.fillStyle = isWhite ? '#94A3B8' : '#FFFFFF';
       stars.forEach(star => {
         star.y -= star.velocity;
         if (star.y < 0) {
@@ -117,13 +119,13 @@ export const MissionBackground: React.FC = () => {
       window.removeEventListener('resize', handleResize);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [ragStatus]);
+  }, [ragStatus, theme]);
 
   return (
     <>
       <canvas
         ref={canvasRef}
-        className="fixed inset-0 pointer-events-none z-0"
+        className="fixed inset-0 pointer-events-none z-0 transition-opacity duration-500"
         aria-hidden="true"
       />
       {/* Subtle Noise Texture Overlay */}
